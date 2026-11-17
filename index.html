@@ -520,7 +520,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   function renderLive(){
     if(!S.car)return;
     var a=S.active;
-    $('startBox').hidden=!!a;$('liveBox').hidden=!a;
+    $('startBox').hidden=!!a;$('liveBox').hidden=!a;renderMonth();
     if(!a){renderSummary();return;}
     var L=live(a);
     $('lPct').textContent=Math.floor(L.pct);
@@ -570,7 +570,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
 
   function renderMonth(){
     var ss=S.sessions,withEur=ss.filter(function(s){return s.eur!=null;});
-    if(!withEur.length&&!S.tariff){$('monthCard').hidden=true;return;}
+    if(!withEur.length||S.active){$('monthCard').hidden=true;return;}
     var now=new Date(),cm=now.getFullYear()*12+now.getMonth(),mk=function(t){var d=new Date(t);return d.getFullYear()*12+d.getMonth();};
     var e=0,k=0,n=0,pe=0,pn=0,tot=0;
     ss.forEach(function(s){var m=mk(s.t);if(s.eur!=null)tot+=s.eur;if(m===cm){n++;k+=s.kwh||0;if(s.eur!=null)e+=s.eur;}else if(m===cm-1&&s.eur!=null){pe+=s.eur;pn++;}});
