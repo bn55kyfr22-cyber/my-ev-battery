@@ -739,6 +739,16 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     resetStop();renderMonth();renderLive();renderList();renderAdv();
   }
   applyTheme();applyLang();renderAll();startSync();
+  /* Atualização automática: se o site tiver uma versão nova, recarrega (uma vez por abertura). */
+  var APP_VER='2026-11-17b';
+  function checkUpdate(){
+    if(!/^https?:/.test(location.protocol)||!window.fetch||S.active&&!$('confirmBox').hidden)return;
+    fetch(location.pathname,{cache:'reload'}).then(function(r){return r.ok?r.text():'';}).then(function(txt){
+      var m=txt.match(/APP_VER='([^']+)'/);
+      if(m&&m[1]!==APP_VER){try{if(sessionStorage.getItem('upd')===m[1])return;sessionStorage.setItem('upd',m[1]);}catch(e){}location.reload();}
+    }).catch(function(){});
+  }
+  checkUpdate();document.addEventListener('visibilitychange',function(){if(!document.hidden)checkUpdate();});
 })();
 </script>
 </body>
