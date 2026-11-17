@@ -37,6 +37,9 @@ html.lt .month-card{box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(37,9
 .mc-f{display:flex;justify-content:space-between;gap:8px;font-size:.82rem;color:var(--mute);border-top:1px solid var(--card2);margin-top:12px;padding-top:10px}
 .carrow{display:flex;align-items:center;gap:10px}.cartxt{flex:1;min-width:0}
 .carimg{width:46%;max-width:200px;height:96px;object-fit:contain;object-position:right center;flex:none}
+.cmpBest{margin-top:10px;background:rgba(34,197,94,.12);color:var(--ink);border-radius:14px;padding:10px 12px;font-size:.92rem}
+.cmpBest b{color:#16A34A}.cmpRow{display:flex;justify-content:space-between;gap:8px;font-size:.88rem;padding:8px 2px;border-top:1px solid var(--card2)}
+.cmpRow .d{color:var(--mute);font-size:.8rem}.cmpRow.me{font-weight:600}
 .pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .pill{display:inline-flex;align-items:center;gap:6px;background:var(--card2);border-radius:999px;padding:6px 11px;font-size:.82rem;font-weight:500}
 .pill svg{width:15px;height:15px}
@@ -184,6 +187,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
         <button class="chip" data-tt="simple" aria-pressed="false"></button>
         <button class="chip" data-tt="bi" aria-pressed="false"></button>
       </div>
+      <div id="opWrap" hidden><label for="opSel" data-t="opL">Operadora</label><select id="opSel"></select></div>
       <div id="tSimple" hidden><label for="pSimple" data-t="pSimple">Preço por kWh (€)</label><input id="pSimple" type="text" inputmode="decimal" placeholder="0,1650"></div>
       <div id="tBi" hidden>
         <div class="grid">
@@ -284,6 +288,15 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     <div id="list"></div>
   </section>
 
+  <section class="month-card" id="cmpCard" hidden>
+    <div class="mc-top"><div class="ic c-violet"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h11M4 7l3-3M4 7l3 3M20 17H9M20 17l-3-3M20 17l-3 3"/></svg></div><div class="mc-l" data-t="cmpH">Comparar tarifários</div></div>
+    <div class="mc-s" id="cmpMine" style="margin-top:8px"></div>
+    <div class="cmpBest" id="cmpBest"></div>
+    <div id="cmpList" hidden></div>
+    <button class="btn2" id="cmpMore" style="min-height:36px;margin-top:4px"></button>
+    <p class="hint" id="cmpNote"></p>
+  </section>
+
 </main>
 <script>
 (function(){
@@ -326,7 +339,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
       vStart:'Vazio começa às',vEnd:'Vazio acaba às',tHint:'Preço por kWh com IVA, como aparece na fatura.',missSimple:'Falta o preço por kWh.',missVazio:'Falta o preço no vazio.',missFora:'Falta o preço fora de vazio.',
       looks:'Aparência',lang:'Idioma',theme:'Tema',auto:'Automático',light:'Claro',dark:'Escuro',save:'Guardar',cancel:'Cancelar',
       spec:'Bateria {kwh} kWh · {kw} kW em casa',specBi:' · bi-horário',capWarn:'Este carro aceita no máximo {ac} kW em casa, por isso a estimativa usa {ek} kW.',
-      startH:'Pronto para carregar',startSub:'Indica a bateria que o carro mostra agora.',awayT:'Carregar fora de casa',awayH:'Carga fora de casa',awaySub:'Escolhe a potência do posto. Não conta para o custo da eletricidade.',akw:'Potência do posto (kW)',awayLive:'Fora de casa · {kw} kW',pBefore:'Bateria antes (%)',pAfter:'Bateria depois (%)',saveAway:'Guardar carga',away:'Fora de casa',awayKwh:'+{kwh} kWh na bateria',sLast:'último carregamento',thisMonth:'Este mês',mcSub:'{kwh} kWh · {n} carregamentos',mcSub1:'{kwh} kWh · 1 carregamento',mcPrev:'Mês passado: {v}',mcTot:'Total: {v}',sMonth:'este mês',pNow:'Bateria agora (%)',kmNow:'Quilómetros do carro (opcional)',
+      startH:'Pronto para carregar',startSub:'Indica a bateria que o carro mostra agora.',awayT:'Carregar fora de casa',awayH:'Carga fora de casa',awaySub:'Escolhe a potência do posto. Não conta para o custo da eletricidade.',akw:'Potência do posto (kW)',awayLive:'Fora de casa · {kw} kW',pBefore:'Bateria antes (%)',pAfter:'Bateria depois (%)',saveAway:'Guardar carga',away:'Fora de casa',awayKwh:'+{kwh} kWh na bateria',sLast:'último carregamento',thisMonth:'Este mês',opL:'Operadora',opOther:'Outra (indicar preço)',opHint:'Preços de referência ({o}, {d}), com IVA. Podem variar com descontos ou condições: confirma na tua fatura e corrige se for diferente.',cmpH:'Comparar tarifários',cmpMine:'Últimos {n} dias: {v} com o teu tarifário ({k} kWh).',cmpBest:'Mais barato: <b>{op} · {opt}</b> — {v} ({diff}).',cmpYou:'O teu tarifário já é o mais barato destas opções.',cmpMore:'Ver todas as opções',cmpLess:'Esconder',cmpNote:'Só os carregamentos do carro em casa, com as horas reais de cada carga. Não inclui a parte fixa da fatura.',simpleS:'Simples',biS:'Bi-horário',mcSub:'{kwh} kWh · {n} carregamentos',mcSub1:'{kwh} kWh · 1 carregamento',mcPrev:'Mês passado: {v}',mcTot:'Total: {v}',sMonth:'este mês',pNow:'Bateria agora (%)',kmNow:'Quilómetros do carro (opcional)',
       kmHint:'Com os km a app calcula o consumo do carro entre carregamentos. Se carregares sem registar aqui (ex.: num posto), o consumo desse intervalo fica errado.',
       go:'Iniciar carregamento',to80:'A carregar · 80 % às {t}',to100:'A carregar · 100 % daqui a {d}',full:'Bateria cheia (estimativa)',from:'Início {p} %',
       sTime:'a carregar',sKwh:'energia',soFar:'até agora',total:'total',consLive:'Consumo desde o último',
@@ -344,7 +357,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
       vStart:'Off-peak starts',vEnd:'Off-peak ends',tHint:'Price per kWh including VAT, as on your bill.',missSimple:'Price per kWh is missing.',missVazio:'Off-peak price is missing.',missFora:'Peak price is missing.',
       looks:'Appearance',lang:'Language',theme:'Theme',auto:'Automatic',light:'Light',dark:'Dark',save:'Save',cancel:'Cancel',
       spec:'{kwh} kWh battery · {kw} kW at home',specBi:' · off-peak tariff',capWarn:'This car accepts at most {ac} kW at home, so the estimate uses {ek} kW.',
-      startH:'Ready to charge',startSub:'Enter the battery level your car shows now.',awayT:'Charging away from home',awayH:'Charge away from home',awaySub:'Choose the charger power. Not counted in your electricity cost.',akw:'Charger power (kW)',awayLive:'Away from home · {kw} kW',pBefore:'Battery before (%)',pAfter:'Battery after (%)',saveAway:'Save charge',away:'Away from home',awayKwh:'+{kwh} kWh into the battery',sLast:'last charge',thisMonth:'This month',mcSub:'{kwh} kWh · {n} charges',mcSub1:'{kwh} kWh · 1 charge',mcPrev:'Last month: {v}',mcTot:'Total: {v}',sMonth:'this month',pNow:'Battery now (%)',kmNow:'Odometer (km, optional)',
+      startH:'Ready to charge',startSub:'Enter the battery level your car shows now.',awayT:'Charging away from home',awayH:'Charge away from home',awaySub:'Choose the charger power. Not counted in your electricity cost.',akw:'Charger power (kW)',awayLive:'Away from home · {kw} kW',pBefore:'Battery before (%)',pAfter:'Battery after (%)',saveAway:'Save charge',away:'Away from home',awayKwh:'+{kwh} kWh into the battery',sLast:'last charge',thisMonth:'This month',opL:'Supplier',opOther:'Other (enter price)',opHint:'Reference prices ({o}, {d}), VAT included. They can vary with discounts or conditions: check your bill and correct if different.',cmpH:'Compare tariffs',cmpMine:'Last {n} days: {v} on your tariff ({k} kWh).',cmpBest:'Cheapest: <b>{op} · {opt}</b> — {v} ({diff}).',cmpYou:'Your tariff is already the cheapest of these options.',cmpMore:'See all options',cmpLess:'Hide',cmpNote:'Only home car charging, using each charge\'s real hours. Fixed bill charges not included.',simpleS:'Flat',biS:'Off-peak',mcSub:'{kwh} kWh · {n} charges',mcSub1:'{kwh} kWh · 1 charge',mcPrev:'Last month: {v}',mcTot:'Total: {v}',sMonth:'this month',pNow:'Battery now (%)',kmNow:'Odometer (km, optional)',
       kmHint:'With the km the app works out your car\'s consumption between charges. If you charge without logging it here (e.g. at a public charger), that interval\'s consumption will be wrong.',
       go:'Start charging',to80:'Charging · 80% at {t}',to100:'Charging · 100% in {d}',full:'Battery full (estimate)',from:'Start {p}%',
       sTime:'charging',sKwh:'energy',soFar:'so far',total:'total',consLive:'Since last charge',
@@ -425,6 +438,16 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   }
   /*CALC-END*/
 
+  /* Preços de referência por operadora, €/kWh com IEC (0,001 €) e IVA a 23 %, calculados a partir dos preços sem IVA
+     publicados por comparadores (Selectra, ComparaJá, Luz&Gás, Comparamais) em out./nov. 2026. Rever periodicamente. */
+  var TARIFFS_DATE='nov. 2026';
+  var TARIFFS=[
+    {op:'EDP',simple:0.1759,vazio:0.1182,fora:0.2036,sn:'Campanha 15% Energia',bn:'Eletricidade (bi-horária)'},
+    {op:'Endesa',simple:0.1745,vazio:0.1449,fora:0.2014,sn:'Eletricidade Endesa (DD+FE)',bn:'Bi-horária'},
+    {op:'Iberdrola',simple:0.1883,vazio:0.1264,fora:0.2375,sn:'Tarifa simples',bn:'Bi-horária'},
+    {op:'Galp',simple:0.1909,vazio:0.1392,fora:0.2148,sn:'Casa & Estrada',bn:'Casa & Estrada Verde'},
+    {op:'Goldenergy',simple:0.1802,vazio:0.1405,fora:0.2197,sn:'Monoelétrico ACP+',bn:'Monoelétrico ACP+ Bi-horária'}
+  ];
   /* ---------- Idioma e tema ---------- */
   var sel=$('model');
   function buildSelect(){
@@ -442,7 +465,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     var tc=document.querySelectorAll('#tchips .chip');tc[0].textContent=t('tNone');tc[1].textContent=t('simple');tc[2].textContent=t('bi');
     $('edit').setAttribute('aria-label',t('settings'));$('cname').placeholder=t('myCar');
     if(!S.active||$('confirmBox').hidden)$('stop').textContent=t('stop');
-    buildSelect();
+    buildSelect();buildOps();
     if(typeof renderStart==='function'&&S.car)try{renderStart();}catch(e){}
   }
   var mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
@@ -478,6 +501,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     $('modelHint').textContent=(c&&!c.custom)?t('modelHint',{kwh:nf(c.kwh),ac:nf(c.ac)}):'';
     var k=num(draft.kw);
     Array.prototype.forEach.call(document.querySelectorAll('#tchips .chip'),function(b){b.setAttribute('aria-pressed',String(b.dataset.tt===draft.tt));});
+    $('opWrap').hidden=!draft.tt;
     $('tSimple').hidden=draft.tt!=='simple';$('tBi').hidden=draft.tt!=='bi';$('tHint').hidden=!draft.tt;
     Array.prototype.forEach.call(document.querySelectorAll('#chips .chip'),function(b){b.setAttribute('aria-pressed',String(num(b.dataset.kw)===k));});
     var miss='';
@@ -491,13 +515,13 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     if(c&&!c.custom){CARS.forEach(function(x,i){if(x[0]+' '+x[1]===c.name)ix=i;});if(ix<0)c=S.car={name:c.name,kwh:c.kwh,ac:c.ac,custom:true};}
     if(c){sel.value=c.custom?'custom':String(ix);if(c.custom){$('cname').value=c.name;$('ckwh').value=cm(c.kwh);$('cac').value=c.ac?cm(c.ac):'';}}
     draft.kw=S.kw;$('kw').value=S.kw?cm(S.kw):'';
-    var T=S.tariff;draft.tt=T?T.type:'';
+    var T=S.tariff;draft.tt=T?T.type:'';buildOps();var oi=-1;if(T&&T.op)TARIFFS.forEach(function(o,i){if(o.op===T.op)oi=i;});$('opSel').value=oi<0?'':String(oi);
     $('pSimple').value=T&&T.type==='simple'?cm(T.price):'';
     $('pVazio').value=T&&T.type==='bi'?cm(T.vazio):'';$('pFora').value=T&&T.type==='bi'?cm(T.fora):'';
     $('vStart').value=T&&T.type==='bi'?T.vStart:'22:00';$('vEnd').value=T&&T.type==='bi'?T.vEnd:'08:00';
     segSet('segLang',LG);segSet('segTheme',document.documentElement.classList.contains('lt')?'light':'dark');
     $('setup').hidden=false;$('cancelCar').hidden=!S.car;$('looksWrap').hidden=!S.car;$('topBar').hidden=!!S.car;
-    $('carCard').hidden=true;$('monthCard').hidden=true;$('chargeCard').hidden=true;$('histCard').hidden=true;$('advCard').hidden=!S.car;if(S.car)renderAdv();
+    $('carCard').hidden=true;$('monthCard').hidden=true;$('cmpCard').hidden=true;$('chargeCard').hidden=true;$('histCard').hidden=true;$('advCard').hidden=!S.car;if(S.car)renderAdv();
     if(S.car&&!(history.state&&history.state.setup))try{history.pushState({setup:1},'');}catch(e){}
     try{window.scrollTo(0,0);}catch(e){}
     renderSetup();
@@ -505,12 +529,18 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   sel.addEventListener('change',renderSetup);
   ['ckwh','cac','cname','pSimple','pVazio','pFora'].forEach(function(id){$(id).addEventListener('input',renderSetup);});
   $('chips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;draft.kw=b.dataset.kw;$('kw').value='';renderSetup();});
-  $('tchips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;draft.tt=b.dataset.tt;renderSetup();});
+  function buildOps(){var h='<option value="">'+t('opOther')+'</option>';TARIFFS.forEach(function(o,i){h+='<option value="'+i+'">'+o.op+'</option>';});var k=$('opSel').value;$('opSel').innerHTML=h;$('opSel').value=k;}
+  function fillOp(){var i=$('opSel').value;if(i==='')return;var o=TARIFFS[+i];
+    if(draft.tt==='simple')$('pSimple').value=cm(o.simple);
+    if(draft.tt==='bi'){$('pVazio').value=cm(o.vazio);$('pFora').value=cm(o.fora);$('vStart').value='22:00';$('vEnd').value='08:00';}
+    $('tHint').textContent=t('opHint',{d:TARIFFS_DATE,o:draft.tt==='bi'?o.bn:o.sn});renderSetup();}
+  $('opSel').addEventListener('change',fillOp);
+  $('tchips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;draft.tt=b.dataset.tt;if($('opSel').value!=='')fillOp();renderSetup();});
   $('kw').addEventListener('input',function(){draft.kw=String(num($('kw').value)||'');renderSetup();});
   $('saveCar').addEventListener('click',function(){
     var c=draftCar(),k=num(draft.kw);if(!c||!k)return;
     var changed=!S.car||S.car.name!==c.name||num(S.kw)!==k;
-    S.car=c;S.kw=String(k);S.tariff=draftTariff();
+    S.car=c;S.kw=String(k);S.tariff=draftTariff();if(S.tariff&&$('opSel').value!=='')S.tariff.op=TARIFFS[+$('opSel').value].op;
     if(changed&&!S.effCal)S.eff='';
     save();closeSetup();
   });
@@ -544,7 +574,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   function renderLive(){
     if(!S.car)return;
     var a=S.active;
-    $('startBox').hidden=!!a;$('liveBox').hidden=!a;renderMonth();
+    $('startBox').hidden=!!a;$('liveBox').hidden=!a;renderMonth();renderCompare();
     var tp=$('tPill');if(tp)tp.hidden=!!(a&&a.away);
     if(!a){renderSummary();renderStart();return;}
     var L=live(a);
@@ -623,6 +653,29 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     $('mcTot').textContent=t('mcTot',{v:eurf(tot)});
     $('monthCard').hidden=false;
   }
+  var cmpOpen=false;
+  function renderCompare(){
+    var T=S.tariff,N=30,since=Date.now()-N*86400000;
+    var ss=S.sessions.filter(function(s){return !s.away&&s.eur!=null&&s.t>=since&&s.mins>0;});
+    if(!T||S.active||ss.length<2){$('cmpCard').hidden=true;return;}
+    var mine=0,k=0;ss.forEach(function(s){var h=s.mins/60;mine+=costOf(s.t,s.t+s.mins*60000,s.kwh/h,T)||0;k+=s.kwh;});
+    var opts=[];TARIFFS.forEach(function(o){
+      [['simple','simpleS'],['bi','biS']].forEach(function(x){
+        var tf=x[0]==='simple'?{type:'simple',price:o.simple}:{type:'bi',vazio:o.vazio,fora:o.fora,vStart:'22:00',vEnd:'08:00'};
+        var c=0;ss.forEach(function(s){var h=s.mins/60;c+=costOf(s.t,s.t+s.mins*60000,s.kwh/h,tf)||0;});
+        opts.push({op:o.op,opt:t(x[1]),v:c,me:T.op===o.op&&T.type===x[0]});
+      });
+    });
+    opts.sort(function(a,b){return a.v-b.v;});
+    var best=opts[0],dif=function(v){var d=v-mine;return (d<0?'−':'+')+eurf(Math.abs(d));};
+    $('cmpMine').textContent=t('cmpMine',{n:N,v:eurf(mine),k:nf(k)});
+    $('cmpBest').innerHTML=best.v<mine-0.005?t('cmpBest',{op:best.op,opt:best.opt,v:eurf(best.v),diff:dif(best.v)}):t('cmpYou');
+    $('cmpList').innerHTML=opts.map(function(o){return '<div class="cmpRow'+(o.me?' me':'')+'"><span>'+o.op+' · '+o.opt+'</span><span>'+eurf(o.v)+' <span class="d">'+dif(o.v)+'</span></span></div>';}).join('');
+    $('cmpList').hidden=!cmpOpen;$('cmpMore').textContent=cmpOpen?t('cmpLess'):t('cmpMore');
+    $('cmpNote').textContent=t('cmpNote');
+    $('cmpCard').hidden=false;
+  }
+  $('cmpMore').addEventListener('click',function(){cmpOpen=!cmpOpen;renderCompare();});
   function renderSummary(){
     var ss=S.sessions.slice().sort(function(x,y){return x.t-y.t;});
     if(!ss.length){$('sumStats').hidden=true;return;}
