@@ -24,6 +24,12 @@ main{max-width:480px;margin:0 auto;padding:14px 16px 40px}
 svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
 button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--go);outline-offset:2px}
 .hero{text-align:center;padding:4px 0}
+.carcard{background:var(--card);border-radius:20px;padding:18px 16px 16px;margin-top:6px;text-align:left}
+html.lt .carcard{box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(37,99,235,.07)}
+.carcard .brand{margin-top:0}.carcard .model{font-size:1.35rem}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--card2);border-radius:999px;padding:6px 11px;font-size:.82rem;font-weight:500}
+.pill svg{width:15px;height:15px}
 #liveRes{border-radius:22px;padding:4px 0 2px}
 html.lt{--bgimg:linear-gradient(180deg,#DCE4F0 0%,#EDF1F7 45%,#F4F6FA 100%);--card2:#E6EBF3;--mute:#56627A}
 html:not(.lt){--bgimg:radial-gradient(120% 60% at 50% 0%,#1E2B4A 0%,#111A2E 55%,#0C1322 100%);--card:#18233A;--card2:#202D47;--mute:#93A0B8}
@@ -111,19 +117,11 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     <button class="iconbtn" id="edit" aria-label="Definições"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   </div>
 
-  <section class="hero" id="carCard" hidden>
-    <img class="photo" id="carPhoto" alt="" hidden>
-    <div class="car" id="carIcon">
-      <svg viewBox="0 0 200 124" aria-hidden="true">
-        <path d="M58 54 66 30q3-8 12-8h44q9 0 12 8l8 24"/><path d="M66 52 73 34q2-5 7-5h40q5 0 7 5l7 18z"/>
-        <path d="M40 92V66q0-12 14-12h92q14 0 14 12v26q0 6-6 6H46q-6 0-6-6z"/><path d="M54 52H42v-7h10M146 52h12v-7h-10"/>
-        <rect x="50" y="64" width="26" height="11" rx="5.5"/><rect x="124" y="64" width="26" height="11" rx="5.5"/>
-        <path d="M86 74h28M90 82h20"/><path d="M48 98v10q0 4 4 4h12q4 0 4-4V98M132 98v10q0 4 4 4h12q4 0 4-4V98"/>
-      </svg>
-    </div>
+  <section class="hero carcard" id="carCard" hidden>
     <div class="brand" id="carBrand"></div>
     <div class="model" id="carName"></div>
-    <div class="spec" id="carInfo"></div>
+    <div class="spec" id="carInfo" hidden></div>
+    <div class="pills" id="carPills"></div>
     <p class="warn" id="capWarn" hidden></p>
   </section>
 
@@ -140,16 +138,6 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
         </div>
       </div>
       <p class="hint" id="modelHint"></p>
-    </div>
-
-    <h2 data-t="photoH">Foto do carro</h2>
-    <div class="box">
-      <div class="photoRow">
-        <button class="chip" id="photoAdd"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8.5 7 10 4h4l1.5 3"/></svg><span id="photoAddTxt"></span></button>
-        <button class="chip" id="photoDel" data-t="removePhoto" hidden>Remover</button>
-      </div>
-      <input type="file" id="photoFile" accept="image/*">
-      <p class="hint" id="photoHint" data-t="photoHint">Fica guardada só neste telemóvel.</p>
     </div>
 
     <h2 data-t="howCharge">Como carregas em casa</h2>
@@ -355,11 +343,6 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
             if(!hadCar&&S.car)$('setup').hidden=true;
             applyTheme();applyLang();renderAll();
           }else if(S.car)pushState();
-          return pd.get().then(function(ps){
-            PDOC=pd;var img=ps.exists&&ps.data().img;
-            if(img&&!photo){photo=img;try{localStorage.setItem(PKEY,img);}catch(e){}renderAll();}
-            else if(photo&&!img)syncPhoto();
-          });
         });
       });
     }).catch(function(){});
@@ -463,7 +446,6 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     else if(draft.tt==='bi'){if(!num($('pVazio').value))miss=t('missVazio');else if(!num($('pFora').value))miss=t('missFora');}
     $('tMissing').hidden=!miss;$('tMissing').textContent=miss;
     $('saveCar').disabled=!(c&&k)||!!miss;
-    $('photoAddTxt').textContent=photo?t('changePhoto'):t('addPhoto');$('photoDel').hidden=!photo;
   }
   function openSetup(){
     var c=S.car,ix=-1;
@@ -497,23 +479,6 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   $('cancelCar').addEventListener('click',closeSetup);
   window.addEventListener('popstate',function(){if(!$('setup').hidden&&S.car){$('setup').hidden=true;renderAll();}});
   $('edit').addEventListener('click',function(){if(!S.car){$('looksWrap').hidden=false;try{$('looksWrap').scrollIntoView({behavior:'smooth'});}catch(e){}return;}openSetup();});
-
-  /* ---------- Foto ---------- */
-  $('photoAdd').addEventListener('click',function(){$('photoFile').click();});
-  $('photoDel').addEventListener('click',function(){photo=null;try{localStorage.removeItem(PKEY);}catch(e){}syncPhoto();renderSetup();});
-  $('photoFile').addEventListener('change',function(){
-    var f=this.files&&this.files[0];this.value='';if(!f)return;
-    var url=URL.createObjectURL(f),img=new Image();
-    img.onload=function(){
-      var w=Math.min(700,img.naturalWidth),h=Math.round(img.naturalHeight*w/img.naturalWidth),cv=document.createElement('canvas');
-      cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
-      var d=cv.toDataURL('image/jpeg',0.72);
-      photo=d;syncPhoto();try{localStorage.setItem(PKEY,d);$('photoHint').textContent=t('photoHint');}catch(e){$('photoHint').textContent=t('photoErr');}
-      renderSetup();
-    };
-    img.onerror=function(){URL.revokeObjectURL(url);$('photoHint').textContent=t('photoErr');};
-    img.src=url;
-  });
 
   /* ---------- Consumo ---------- */
   function consBetween(q,p0,km){
@@ -634,12 +599,14 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     if(!S.car){openSetup();return;}
     var c=S.car,k=num(S.kw),ek=effKw(),T=S.tariff;
     $('topBar').hidden=false;
-    $('carPhoto').hidden=!photo;$('carIcon').hidden=!!photo;if(photo)$('carPhoto').src=photo;
     var br=c.brand||'',mo=c.model||c.name;
     if(!c.custom&&!c.brand){var sp=c.name.indexOf(' ');br=c.name.slice(0,sp);mo=c.name.slice(sp+1);}
     $('carBrand').textContent=br;$('carBrand').hidden=!br;
     $('carName').textContent=mo;
     $('carInfo').textContent=t('spec',{kwh:nf(c.kwh),kw:nf(k)})+(T?(T.type==='simple'?' · '+nf(T.price,4)+' €/kWh':t('specBi')):'');
+    var P=function(ic,cl,tx){return '<span class="pill"><span class="ic '+cl+'" style="width:auto;height:auto;margin:0;background:none">'+ic+'</span>'+tx+'</span>';};
+    var I1='<svg class="i" viewBox="0 0 24 24"><rect x="3" y="7" width="16" height="10" rx="2.5"/><path d="M22 11v2M7 10v4M11 10v4"/></svg>',I2='<svg class="i" viewBox="0 0 24 24"><path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5"/></svg>',I3='<svg class="i" viewBox="0 0 24 24"><path d="M17.5 6.5a7 7 0 1 0 0 11"/><path d="M4 10h9M4 14h9"/></svg>';
+    $('carPills').innerHTML=P(I1,'c-green',nf(c.kwh)+' kWh')+P(I2,'c-blue',nf(k)+' kW')+(T?P(I3,'c-amber',T.type==='simple'?nf(T.price,4)+' €/kWh':t('bi')):'');
     $('capWarn').hidden=!(ek<k);
     if(ek<k)$('capWarn').textContent=t('capWarn',{ac:nf(c.ac),ek:nf(ek)});
     $('carCard').hidden=false;$('chargeCard').hidden=false;$('histCard').hidden=false;$('advCard').hidden=false;
