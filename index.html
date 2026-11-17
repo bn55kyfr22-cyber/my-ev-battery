@@ -34,6 +34,8 @@ html.lt .month-card{box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(37,9
 .mc-v{font-size:2.4rem;font-weight:600;letter-spacing:-.02em;margin-top:8px;line-height:1.1}
 .mc-s{font-size:.85rem;color:var(--mute);margin-top:2px}
 .mc-f{display:flex;justify-content:space-between;gap:8px;font-size:.82rem;color:var(--mute);border-top:1px solid var(--card2);margin-top:12px;padding-top:10px}
+.carrow{display:flex;align-items:center;gap:10px}.cartxt{flex:1;min-width:0}
+.carimg{width:46%;max-width:200px;height:96px;object-fit:contain;object-position:right center;flex:none}
 .pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .pill{display:inline-flex;align-items:center;gap:6px;background:var(--card2);border-radius:999px;padding:6px 11px;font-size:.82rem;font-weight:500}
 .pill svg{width:15px;height:15px}
@@ -125,8 +127,8 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   </div>
 
   <section class="hero carcard" id="carCard" hidden>
-    <div class="brand" id="carBrand"></div>
-    <div class="model" id="carName"></div>
+    <div class="carrow"><div class="cartxt"><div class="brand" id="carBrand"></div>
+    <div class="model" id="carName"></div></div><img class="carimg" id="carImg" alt="" hidden></div>
     <div class="spec" id="carInfo" hidden></div>
     <div class="pills" id="carPills"></div>
     <p class="warn" id="capWarn" hidden></p>
@@ -145,6 +147,13 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
         </div>
       </div>
       <p class="hint" id="modelHint"></p>
+    </div>
+
+    <h2><span data-t="imgH">Imagem do carro</span> <span class="opt" data-t="optional">(opcional)</span></h2>
+    <div class="box">
+      <div class="chips"><button class="chip" id="imgAdd"></button><button class="chip" id="imgDel" data-t="removePhoto" hidden>Remover</button></div>
+      <input type="file" id="imgFile" accept="image/*">
+      <p class="hint" id="imgHint" data-t="imgHint"></p>
     </div>
 
     <h2 data-t="howCharge">Como carregas em casa</h2>
@@ -296,7 +305,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     pt:{app:'My EV Battery',settings:'Definições',back:'Voltar',yourCar:'O teu carro',makeModel:'Marca e modelo',chooseCar:'Escolhe o teu carro',otherCar:'Outro carro (indicar bateria)',
       nameOpt:'Nome (opcional)',myCar:'O meu carro',usable:'Bateria útil (kWh)',acMax:'Carga máx. AC (kW, opcional)',
       modelHint:'Bateria útil ≈ {kwh} kWh · aceita até {ac} kW em casa (AC). Se não bater certo com o teu carro, escolhe "Outro carro" e indica os valores.',
-      photoH:'Foto do carro',addPhoto:'Adicionar foto',changePhoto:'Trocar foto',removePhoto:'Remover',photoHint:'Fica guardada só neste telemóvel.',photoErr:'Não foi possível guardar a foto.',
+      imgH:'Imagem do carro',imgHint:'Fica bem uma imagem do carro de lado ou na diagonal, de preferência com fundo transparente (PNG). Fica guardada só neste telemóvel.',addPhoto:'Adicionar imagem',changePhoto:'Trocar imagem',removePhoto:'Remover',photoHint:'Fica guardada só neste telemóvel.',photoErr:'Não foi possível guardar a foto.',
       howCharge:'Como carregas em casa',plug:'tomada normal',plug2:'tomada reforçada',wallbox:'wallbox',wallbox3:'wallbox trifásica',kwOr:'Ou indica a potência que o carro mostra (kW)',
       costH:'Custo da eletricidade',optional:'(opcional)',tNone:'Não calcular',simple:'Simples',bi:'Bi-horário',pSimple:'Preço por kWh (€)',pVazio:'Vazio (€/kWh)',pFora:'Fora de vazio (€/kWh)',
       vStart:'Vazio começa às',vEnd:'Vazio acaba às',tHint:'Preço por kWh com IVA, como aparece na fatura.',missSimple:'Falta o preço por kWh.',missVazio:'Falta o preço no vazio.',missFora:'Falta o preço fora de vazio.',
@@ -314,7 +323,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     en:{app:'My EV Battery',settings:'Settings',back:'Back',yourCar:'Your car',makeModel:'Make and model',chooseCar:'Choose your car',otherCar:'Other car (enter battery)',
       nameOpt:'Name (optional)',myCar:'My car',usable:'Usable battery (kWh)',acMax:'Max AC charging (kW, optional)',
       modelHint:'Usable battery ≈ {kwh} kWh · accepts up to {ac} kW at home (AC). If this doesn\'t match your car, choose "Other car" and enter the values.',
-      photoH:'Car photo',addPhoto:'Add photo',changePhoto:'Change photo',removePhoto:'Remove',photoHint:'Stored only on this phone.',photoErr:'The photo could not be saved.',
+      imgH:'Car image',imgHint:'Works best with a side or three-quarter image of the car, ideally with a transparent background (PNG). Stored only on this phone.',addPhoto:'Add image',changePhoto:'Change image',removePhoto:'Remove',photoHint:'Stored only on this phone.',photoErr:'The photo could not be saved.',
       howCharge:'How you charge at home',plug:'standard socket',plug2:'reinforced socket',wallbox:'wallbox',wallbox3:'3-phase wallbox',kwOr:'Or enter the power your car shows (kW)',
       costH:'Electricity cost',optional:'(optional)',tNone:'Don\'t calculate',simple:'Flat rate',bi:'Off-peak / peak',pSimple:'Price per kWh (€)',pVazio:'Off-peak (€/kWh)',pFora:'Peak (€/kWh)',
       vStart:'Off-peak starts',vEnd:'Off-peak ends',tHint:'Price per kWh including VAT, as on your bill.',missSimple:'Price per kWh is missing.',missVazio:'Off-peak price is missing.',missFora:'Peak price is missing.',
@@ -459,6 +468,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     else if(draft.tt==='bi'){if(!num($('pVazio').value))miss=t('missVazio');else if(!num($('pFora').value))miss=t('missFora');}
     $('tMissing').hidden=!miss;$('tMissing').textContent=miss;
     $('saveCar').disabled=!(c&&k)||!!miss;
+    $('imgAdd').textContent=photo?t('changePhoto'):t('addPhoto');$('imgDel').hidden=!photo;
   }
   function openSetup(){
     var c=S.car,ix=-1;
@@ -492,6 +502,23 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   $('cancelCar').addEventListener('click',closeSetup);
   window.addEventListener('popstate',function(){if(!$('setup').hidden&&S.car){$('setup').hidden=true;renderAll();}});
   $('edit').addEventListener('click',function(){if(!S.car){$('looksWrap').hidden=false;try{$('looksWrap').scrollIntoView({behavior:'smooth'});}catch(e){}return;}openSetup();});
+
+  /* ---------- Imagem ---------- */
+  $('imgAdd').addEventListener('click',function(){$('imgFile').click();});
+  $('imgDel').addEventListener('click',function(){photo=null;try{localStorage.removeItem(PKEY);}catch(e){}renderSetup();});
+  $('imgFile').addEventListener('change',function(){
+    var f=this.files&&this.files[0];this.value='';if(!f)return;
+    var url=URL.createObjectURL(f),img=new Image(),alpha=/png|webp|gif/i.test(f.type);
+    img.onload=function(){
+      var w=Math.min(alpha?600:800,img.naturalWidth),h=Math.round(img.naturalHeight*w/img.naturalWidth),cv=document.createElement('canvas');
+      cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
+      photo=alpha?cv.toDataURL('image/png'):cv.toDataURL('image/jpeg',0.8);
+      try{localStorage.setItem(PKEY,photo);$('imgHint').textContent=t('imgHint');}catch(e){$('imgHint').textContent=t('photoErr');}
+      renderSetup();
+    };
+    img.onerror=function(){URL.revokeObjectURL(url);$('imgHint').textContent=t('photoErr');};
+    img.src=url;
+  });
 
   /* ---------- Consumo ---------- */
   function consBetween(q,p0,km){
@@ -624,7 +651,9 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     $('topBar').hidden=false;
     var br=c.brand||'',mo=c.model||c.name;
     if(!c.custom&&!c.brand){var sp=c.name.indexOf(' ');br=c.name.slice(0,sp);mo=c.name.slice(sp+1);}
+    $('carImg').hidden=!photo;if(photo)$('carImg').src=photo;
     $('carBrand').textContent=br;$('carBrand').hidden=!br;
+    if(mo==='Kona Electric 64 kWh (2018–2023)')mo='Kona Electric 64 kWh';
     $('carName').textContent=mo;
     $('carInfo').textContent=t('spec',{kwh:nf(c.kwh),kw:nf(k)})+(T?(T.type==='simple'?' · '+nf(T.price,4)+' €/kWh':t('specBi')):'');
     var P=function(ic,cl,tx){return '<span class="pill"><span class="ic '+cl+'" style="width:auto;height:auto;margin:0;background:none">'+ic+'</span>'+tx+'</span>';};
