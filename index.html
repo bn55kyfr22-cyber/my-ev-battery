@@ -27,6 +27,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .carcard{background:var(--card);border-radius:20px;padding:18px 16px 16px;margin-top:6px;text-align:left}
 html.lt .carcard{box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(37,99,235,.07)}
 .carcard .brand{margin-top:0}.carcard .model{font-size:1.35rem}
+.month-card{background:var(--card);border-radius:20px;padding:16px;margin-top:10px}
+html.lt .month-card{box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(37,99,235,.07)}
+.mc-top{display:flex;align-items:center;gap:10px}.mc-top .ic{margin:0}
+.mc-l{font-size:.85rem;font-weight:600;color:var(--mute)}
+.mc-v{font-size:2.4rem;font-weight:600;letter-spacing:-.02em;margin-top:8px;line-height:1.1}
+.mc-s{font-size:.85rem;color:var(--mute);margin-top:2px}
+.mc-f{display:flex;justify-content:space-between;gap:8px;font-size:.82rem;color:var(--mute);border-top:1px solid var(--card2);margin-top:12px;padding-top:10px}
 .pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .pill{display:inline-flex;align-items:center;gap:6px;background:var(--card2);border-radius:999px;padding:6px 11px;font-size:.82rem;font-weight:500}
 .pill svg{width:15px;height:15px}
@@ -186,6 +193,13 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     <button class="btn2" id="cancelCar" hidden data-t="cancel">Cancelar</button>
   </section>
 
+  <section class="month-card" id="monthCard" hidden>
+    <div class="mc-top"><div class="ic c-amber"><svg class="i" viewBox="0 0 24 24"><path d="M17.5 6.5a7 7 0 1 0 0 11"/><path d="M4 10h9M4 14h9"/></svg></div><div class="mc-l" data-t="thisMonth">Este mês</div></div>
+    <div class="mc-v" id="mcEur"></div>
+    <div class="mc-s" id="mcSub"></div>
+    <div class="mc-f"><span id="mcPrev"></span><span id="mcTot"></span></div>
+  </section>
+
   <section id="chargeCard" hidden>
     <div id="startBox">
       <div class="startCard" style="margin-top:14px">
@@ -201,7 +215,6 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
       <div class="stats" id="sumStats" hidden>
         <div class="stat" id="sLastBox"><div class="ic c-green"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="7" width="16" height="10" rx="2.5"/><path d="M22 11v2M7 10v4M11 10v4"/></svg></div><div class="v" id="sLast"></div><div class="l" data-t="sLast">último carregamento</div></div>
         <div class="stat" id="sAvgBox"><div class="ic c-violet"><svg class="i" viewBox="0 0 24 24"><path d="M5 20 9.5 4M19 20 14.5 4M12 6v2M12 11v2M12 16v2"/></svg></div><div class="v" id="sAvg"></div><div class="l">kWh/100 km</div></div>
-        <div class="stat" id="sMonthBox"><div class="ic c-amber"><svg class="i" viewBox="0 0 24 24"><path d="M17.5 6.5a7 7 0 1 0 0 11"/><path d="M4 10h9M4 14h9"/></svg></div><div class="v" id="sMonth"></div><div class="l" data-t="sMonth">este mês</div></div>
       </div>
     </div>
     <div id="liveBox" hidden>
@@ -289,7 +302,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
       vStart:'Vazio começa às',vEnd:'Vazio acaba às',tHint:'Preço por kWh com IVA, como aparece na fatura.',missSimple:'Falta o preço por kWh.',missVazio:'Falta o preço no vazio.',missFora:'Falta o preço fora de vazio.',
       looks:'Aparência',lang:'Idioma',theme:'Tema',auto:'Automático',light:'Claro',dark:'Escuro',save:'Guardar',cancel:'Cancelar',
       spec:'Bateria {kwh} kWh · {kw} kW em casa',specBi:' · bi-horário',capWarn:'Este carro aceita no máximo {ac} kW em casa, por isso a estimativa usa {ek} kW.',
-      startH:'Pronto para carregar',startSub:'Indica a bateria que o carro mostra agora.',sLast:'último carregamento',sMonth:'este mês',pNow:'Bateria agora (%)',kmNow:'Quilómetros do carro (opcional)',
+      startH:'Pronto para carregar',startSub:'Indica a bateria que o carro mostra agora.',sLast:'último carregamento',thisMonth:'Este mês',mcSub:'{kwh} kWh · {n} carregamentos',mcSub1:'{kwh} kWh · 1 carregamento',mcPrev:'Mês passado: {v}',mcTot:'Total: {v}',sMonth:'este mês',pNow:'Bateria agora (%)',kmNow:'Quilómetros do carro (opcional)',
       kmHint:'Com os km a app calcula o consumo do carro entre carregamentos. Se carregares sem registar aqui (ex.: num posto), o consumo desse intervalo fica errado.',
       go:'Iniciar carregamento',to80:'A carregar · 80 % às {t}',to100:'A carregar · 100 % daqui a {d}',full:'Bateria cheia (estimativa)',from:'Início {p} %',
       sTime:'a carregar',sKwh:'energia',soFar:'até agora',total:'total',consLive:'Consumo desde o último',
@@ -307,7 +320,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
       vStart:'Off-peak starts',vEnd:'Off-peak ends',tHint:'Price per kWh including VAT, as on your bill.',missSimple:'Price per kWh is missing.',missVazio:'Off-peak price is missing.',missFora:'Peak price is missing.',
       looks:'Appearance',lang:'Language',theme:'Theme',auto:'Automatic',light:'Light',dark:'Dark',save:'Save',cancel:'Cancel',
       spec:'{kwh} kWh battery · {kw} kW at home',specBi:' · off-peak tariff',capWarn:'This car accepts at most {ac} kW at home, so the estimate uses {ek} kW.',
-      startH:'Ready to charge',startSub:'Enter the battery level your car shows now.',sLast:'last charge',sMonth:'this month',pNow:'Battery now (%)',kmNow:'Odometer (km, optional)',
+      startH:'Ready to charge',startSub:'Enter the battery level your car shows now.',sLast:'last charge',thisMonth:'This month',mcSub:'{kwh} kWh · {n} charges',mcSub1:'{kwh} kWh · 1 charge',mcPrev:'Last month: {v}',mcTot:'Total: {v}',sMonth:'this month',pNow:'Battery now (%)',kmNow:'Odometer (km, optional)',
       kmHint:'With the km the app works out your car\'s consumption between charges. If you charge without logging it here (e.g. at a public charger), that interval\'s consumption will be wrong.',
       go:'Start charging',to80:'Charging · 80% at {t}',to100:'Charging · 100% in {d}',full:'Battery full (estimate)',from:'Start {p}%',
       sTime:'charging',sKwh:'energy',soFar:'so far',total:'total',consLive:'Since last charge',
@@ -458,7 +471,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     $('vStart').value=T&&T.type==='bi'?T.vStart:'22:00';$('vEnd').value=T&&T.type==='bi'?T.vEnd:'08:00';
     segSet('segLang',LG);segSet('segTheme',document.documentElement.classList.contains('lt')?'light':'dark');
     $('setup').hidden=false;$('cancelCar').hidden=!S.car;$('looksWrap').hidden=!S.car;$('topBar').hidden=!!S.car;
-    $('carCard').hidden=true;$('chargeCard').hidden=true;$('histCard').hidden=true;$('advCard').hidden=true;
+    $('carCard').hidden=true;$('monthCard').hidden=true;$('chargeCard').hidden=true;$('histCard').hidden=true;$('advCard').hidden=true;
     if(S.car&&!(history.state&&history.state.setup))try{history.pushState({setup:1},'');}catch(e){}
     try{window.scrollTo(0,0);}catch(e){}
     renderSetup();
@@ -551,14 +564,24 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   document.addEventListener('visibilitychange',renderLive);
   window.addEventListener('pageshow',renderLive);
 
+  function renderMonth(){
+    var ss=S.sessions,withEur=ss.filter(function(s){return s.eur!=null;});
+    if(!withEur.length&&!S.tariff){$('monthCard').hidden=true;return;}
+    var now=new Date(),cm=now.getFullYear()*12+now.getMonth(),mk=function(t){var d=new Date(t);return d.getFullYear()*12+d.getMonth();};
+    var e=0,k=0,n=0,pe=0,pn=0,tot=0;
+    ss.forEach(function(s){var m=mk(s.t);if(s.eur!=null)tot+=s.eur;if(m===cm){n++;k+=s.kwh||0;if(s.eur!=null)e+=s.eur;}else if(m===cm-1&&s.eur!=null){pe+=s.eur;pn++;}});
+    $('mcEur').textContent=eurf(e);
+    $('mcSub').textContent=t(n===1?'mcSub1':'mcSub',{kwh:nf(k),n:n});
+    $('mcPrev').textContent=pn?t('mcPrev',{v:eurf(pe)}):'';
+    $('mcTot').textContent=t('mcTot',{v:eurf(tot)});
+    $('monthCard').hidden=false;
+  }
   function renderSummary(){
     var ss=S.sessions.slice().sort(function(x,y){return x.t-y.t;});
     if(!ss.length){$('sumStats').hidden=true;return;}
     var last=ss[ss.length-1];$('sLast').textContent=Math.round(last.p1)+' %';
     var tk=0,tw=0;ss.forEach(function(s,i){var c=consBetween(ss[i-1],s.p0,s.km);if(c){tk+=c.km;tw+=c.kwh;}});
     $('sAvgBox').hidden=!tk;if(tk)$('sAvg').textContent=nf(tw/tk*100);
-    var now=new Date(),m=0,hasM=false;ss.forEach(function(s){var d=new Date(s.t);if(s.eur!=null&&d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()){m+=s.eur;hasM=true;}});
-    $('sMonthBox').hidden=!hasM;if(hasM)$('sMonth').textContent=eurf(m);
     $('sumStats').hidden=false;
   }
 
@@ -583,7 +606,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   }
   $('list').addEventListener('click',function(e){
     var b=e.target.closest('button.del');if(!b)return;var id=Number(b.getAttribute('data-id'));
-    S.sessions=S.sessions.filter(function(s){return s.id!==id;});save();renderList();
+    S.sessions=S.sessions.filter(function(s){return s.id!==id;});save();renderList();renderMonth();
   });
 
   /* ---------- Precisão ---------- */
@@ -610,7 +633,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     $('capWarn').hidden=!(ek<k);
     if(ek<k)$('capWarn').textContent=t('capWarn',{ac:nf(c.ac),ek:nf(ek)});
     $('carCard').hidden=false;$('chargeCard').hidden=false;$('histCard').hidden=false;$('advCard').hidden=false;
-    resetStop();renderLive();renderList();renderAdv();
+    resetStop();renderMonth();renderLive();renderList();renderAdv();
   }
   applyTheme();applyLang();renderAll();startSync();
 })();
