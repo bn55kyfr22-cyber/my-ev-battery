@@ -10,6 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="theme-color" content="#111A2E">
+<script data-goatcounter="https://myevbattery.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <style>
 :root{--bg:#F4F5F7;--card:#FFFFFF;--card2:#EEF0F3;--ink:#14171A;--mute:#6B737C;--go:#16A34A;--go2:#15803D;--acc:#14171A;--accink:#fff;--warn:#B45309;color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1013;--card:#171A1F;--card2:#1F2329;--ink:#F2F4F6;--mute:#8A929C;--go:#3DDC84;--go2:#1FA85A;--acc:#E8EBEE;--accink:#0E1013;--warn:#F59E0B;color-scheme:dark}}
@@ -542,6 +543,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     var p=parseFloat(String($('p0').value).replace(',','.'));
     if(!(p>=0&&p<100)){$('p0').focus();return;}
     var km=parseFloat(String($('km0').value).replace(/\s|\./g,'').replace(',','.'));
+    try{window.goatcounter&&goatcounter.count&&goatcounter.count({path:'iniciar-carregamento',title:'Iniciar carregamento',event:true});}catch(e){}
     S.active={t:Date.now(),p:p};if(km>0)S.active.km=km;$('p0').value='';$('km0').value='';save();renderLive();
   });
   $('stop').addEventListener('click',function(){
