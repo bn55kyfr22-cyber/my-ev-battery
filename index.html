@@ -628,7 +628,8 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     $('topBar').hidden=false;
     var br=c.brand||'',mo=c.model||c.name;
     if(!c.custom&&!c.brand){var sp=c.name.indexOf(' ');br=c.name.slice(0,sp);mo=c.name.slice(sp+1);}
-    $('carImg').hidden=!photo;if(photo)$('carImg').src=photo;
+    var showImg=!!photo&&c.name==='Hyundai Kona Electric 64 kWh (2018–2023)';
+    $('carImg').hidden=!showImg;if(showImg)$('carImg').src=photo;
     $('carBrand').textContent=br;$('carBrand').hidden=!br;
     if(mo==='Kona Electric 64 kWh (2018–2023)')mo='Kona Electric 64 kWh';
     $('carName').textContent=mo;
