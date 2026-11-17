@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="My EV Battery">
+<title>My EV Battery</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#111A2E">
+<style>
+:root{--bg:#F4F5F7;--card:#FFFFFF;--card2:#EEF0F3;--ink:#14171A;--mute:#6B737C;--go:#16A34A;--go2:#15803D;--acc:#14171A;--accink:#fff;--warn:#B45309;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1013;--card:#171A1F;--card2:#1F2329;--ink:#F2F4F6;--mute:#8A929C;--go:#3DDC84;--go2:#1FA85A;--acc:#E8EBEE;--accink:#0E1013;--warn:#F59E0B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1013;--card:#171A1F;--card2:#1F2329;--ink:#F2F4F6;--mute:#8A929C;--go:#3DDC84;--go2:#1FA85A;--acc:#E8EBEE;--accink:#0E1013;--warn:#F59E0B;color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bgimg,var(--bg));background-attachment:fixed;min-height:100vh;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Inter','Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.4;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+main{max-width:480px;margin:0 auto;padding:14px 16px 40px}
+[hidden]{display:none!important}
+.top{display:flex;align-items:center;justify-content:space-between;min-height:44px;margin-bottom:4px}
+.top h1{font-size:.95rem;font-weight:600;color:var(--mute)}
+.iconbtn{width:44px;height:44px;border-radius:12px;border:0;background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--go);outline-offset:2px}
+.hero{text-align:center;padding:4px 0}
+#liveRes{border-radius:22px;padding:4px 0 2px}
+html.lt{--bgimg:linear-gradient(180deg,#DCE4F0 0%,#EDF1F7 45%,#F4F6FA 100%);--card2:#E6EBF3;--mute:#56627A}
+html:not(.lt){--bgimg:radial-gradient(120% 60% at 50% 0%,#1E2B4A 0%,#111A2E 55%,#0C1322 100%);--card:#18233A;--card2:#202D47;--mute:#93A0B8}
+.startCard{border-radius:22px;padding:16px;background:linear-gradient(180deg,rgba(61,220,132,.10),rgba(61,220,132,.03));box-shadow:inset 0 0 0 1px rgba(61,220,132,.18)}
+html.lt .startCard{background:linear-gradient(180deg,#E6F8EE,#F7FCF9);box-shadow:inset 0 0 0 1px #CBEFD9}
+.startHead{display:flex;align-items:center;gap:12px;margin-bottom:14px}.startHead .ic{margin:0;width:40px;height:40px;border-radius:12px}
+.startHead .a{font-weight:600;font-size:1.05rem}.startHead .b{font-size:.82rem;color:var(--mute)}
+.bigIn{position:relative}.bigIn input{font-size:2rem;font-weight:600;text-align:center;min-height:64px;padding-right:40px;background:var(--card)}
+.bigIn span{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:1.4rem;color:var(--mute)}
+.startCard input{background:var(--card)}
+html.lt .startCard input{box-shadow:0 1px 2px rgba(16,24,40,.06)}
+.btn svg{width:18px;height:18px;vertical-align:-3px;margin-right:6px;fill:currentColor;stroke:none}
+html.lt{--bg:#EDF1F5;--ink:#0B1220;--mute:#526070;--card2:#E3E9EF;--acc:#16A34A;--accink:#fff;--go:#15803D;--go2:#16A34A}
+html.lt .stat,html.lt .row,html.lt .box,html.lt .iconbtn{box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(16,24,40,.06)}
+html.lt #liveRes{background:linear-gradient(180deg,#E6F8EE,#F7FCF9);padding:6px 14px 4px;box-shadow:inset 0 0 0 1px #CBEFD9}
+html.lt #liveRes .stat{background:#fff}
+.car{width:100%;max-width:200px;height:124px;margin:0 auto;color:var(--mute)}
+.car svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.photo{display:block;width:100%;height:180px;object-fit:cover;border-radius:20px;margin-bottom:8px}
+.brand{font-size:.72rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);margin-top:4px}
+.model{font-size:1.25rem;font-weight:600;margin-top:2px}
+.spec{font-size:.85rem;color:var(--mute);margin-top:2px}
+.warn{font-size:.85rem;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--card2);color:var(--warn);text-align:left}
+.pct{display:flex;align-items:center;justify-content:center;gap:6px;margin:18px 0 4px}
+.pct .n{font-size:4.2rem;font-weight:300;letter-spacing:-.04em;line-height:1}
+.pct .u{font-size:1.6rem;font-weight:300;color:var(--mute);align-self:flex-start;margin-top:8px}
+.pct svg{width:26px;height:26px;fill:var(--go);stroke:none;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+.status{text-align:center;color:var(--go);font-size:.9rem;font-weight:500}
+.bar{position:relative;height:8px;border-radius:99px;background:var(--card2);margin:16px 0 6px;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;width:0;border-radius:99px;background:linear-gradient(90deg,var(--go2),var(--go),var(--go2));background-size:200% 100%;animation:flow 2.5s linear infinite;transition:width .6s ease}
+.bar b{position:absolute;top:0;bottom:0;left:80%;width:2px;background:var(--mute);opacity:.6}
+@keyframes flow{to{background-position:-200% 0}}
+.done .pct svg,.done .bar i{animation:none}
+.scale{position:relative;height:16px;font-size:.72rem;color:var(--mute)}
+.scale span{position:absolute;top:0}.scale span:nth-child(1){left:0}.scale span:nth-child(2){left:80%;transform:translateX(-50%)}.scale span:nth-child(3){right:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px;margin:18px 0 10px}
+.stat{background:var(--card);border-radius:16px;padding:12px 10px;min-width:0}
+.stat .v{font-size:1.05rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat .l{font-size:.72rem;color:var(--mute);margin-top:2px}
+.ic{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--card2);color:var(--ink);flex:none;margin-bottom:8px}
+.ic.c-blue{background:rgba(59,130,246,.16);color:#3B82F6}.ic.c-green{background:rgba(34,197,94,.16);color:#22C55E}.ic.c-amber{background:rgba(245,158,11,.16);color:#F59E0B}.ic.c-violet{background:rgba(139,92,246,.16);color:#8B5CF6}
+.row{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:12px 14px;margin-bottom:8px}
+.row .ic{margin:0;width:36px;height:36px}
+.row .t{flex:1;min-width:0}
+.row .t .a{font-size:.95rem;font-weight:500}
+.row .t .b{font-size:.8rem;color:var(--mute);margin-top:1px}
+.row .r{text-align:right;font-weight:600;white-space:nowrap}
+.row .r small{display:block;font-weight:400;color:var(--mute);font-size:.8rem}
+.month{font-size:.8rem;font-weight:600;color:var(--mute);margin:14px 2px 8px}
+h2{font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:26px 2px 10px}
+h2 .opt{text-transform:none;letter-spacing:0;font-weight:400}
+.btn{width:100%;font:inherit;font-size:1rem;font-weight:600;border:0;border-radius:14px;min-height:52px;background:var(--acc);color:var(--accink);margin-top:8px;cursor:pointer}
+.btn.go{background:#16A34A;color:#fff}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn2{width:100%;font:inherit;font-size:.95rem;border:0;background:none;color:var(--mute);min-height:44px;cursor:pointer}
+button.del{background:none;border:0;color:var(--mute);font:inherit;font-size:1.2rem;min-width:36px;min-height:44px;cursor:pointer}
+.box{background:var(--card);border-radius:16px;padding:14px}
+label{display:block;font-size:.82rem;color:var(--mute);margin:12px 0 5px}
+.box>label:first-child{margin-top:0}
+input,select{width:100%;font:inherit;font-size:1rem;color:var(--ink);background:var(--card2);border:0;border-radius:12px;padding:11px 12px;min-height:46px}
+input[type=time]{-webkit-appearance:none;appearance:none;display:block;line-height:normal;text-align:left}
+input[type=file]{display:none}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}.grid>div{min-width:0}.full{grid-column:1/-1}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:.92rem;background:var(--card2);color:var(--ink);border:0;border-radius:12px;min-height:46px;padding:6px 14px;cursor:pointer;line-height:1.15}
+.chip small{display:block;font-size:.7rem;color:var(--mute)}
+.chip[aria-pressed="true"]{background:var(--acc);color:var(--accink)}
+.chip[aria-pressed="true"] small{color:var(--accink);opacity:.75}
+.seg{display:flex;background:var(--card2);border-radius:12px;padding:3px}
+.seg button{flex:1;font:inherit;font-size:.88rem;border:0;background:none;color:var(--mute);min-height:40px;border-radius:10px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.hint{font-size:.78rem;color:var(--mute);margin-top:8px}
+.photoRow{display:flex;gap:8px}
+.photoRow .chip{flex:1;display:flex;align-items:center;justify-content:center;gap:8px}
+.back{background:none;border:0;color:var(--ink);font:inherit;font-size:1rem;font-weight:500;min-height:44px;padding:0;cursor:pointer;display:flex;align-items:center;gap:4px}
+details summary{cursor:pointer;font-weight:500;min-height:32px}
+@media (prefers-reduced-motion:reduce){.pct svg,.bar i{animation:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top" id="topBar">
+    <h1 data-t="app">My EV Battery</h1>
+    <button class="iconbtn" id="edit" aria-label="Definições"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+  </div>
+
+  <section class="hero" id="carCard" hidden>
+    <img class="photo" id="carPhoto" alt="" hidden>
+    <div class="car" id="carIcon">
+      <svg viewBox="0 0 200 124" aria-hidden="true">
+        <path d="M58 54 66 30q3-8 12-8h44q9 0 12 8l8 24"/><path d="M66 52 73 34q2-5 7-5h40q5 0 7 5l7 18z"/>
+        <path d="M40 92V66q0-12 14-12h92q14 0 14 12v26q0 6-6 6H46q-6 0-6-6z"/><path d="M54 52H42v-7h10M146 52h12v-7h-10"/>
+        <rect x="50" y="64" width="26" height="11" rx="5.5"/><rect x="124" y="64" width="26" height="11" rx="5.5"/>
+        <path d="M86 74h28M90 82h20"/><path d="M48 98v10q0 4 4 4h12q4 0 4-4V98M132 98v10q0 4 4 4h12q4 0 4-4V98"/>
+      </svg>
+    </div>
+    <div class="brand" id="carBrand"></div>
+    <div class="model" id="carName"></div>
+    <div class="spec" id="carInfo"></div>
+    <p class="warn" id="capWarn" hidden></p>
+  </section>
+
+  <section id="setup" hidden>
+    <h2 data-t="yourCar" style="margin-top:6px">O teu carro</h2>
+    <div class="box">
+      <label for="model" data-t="makeModel">Marca e modelo</label>
+      <select id="model"></select>
+      <div id="customWrap" hidden>
+        <div class="grid">
+          <div class="full"><label for="cname" data-t="nameOpt">Nome (opcional)</label><input id="cname" type="text"></div>
+          <div><label for="ckwh" data-t="usable">Bateria útil (kWh)</label><input id="ckwh" type="text" inputmode="decimal" placeholder="50"></div>
+          <div><label for="cac" data-t="acMax">Carga máx. AC (kW, opcional)</label><input id="cac" type="text" inputmode="decimal" placeholder="7,4"></div>
+        </div>
+      </div>
+      <p class="hint" id="modelHint"></p>
+    </div>
+
+    <h2 data-t="photoH">Foto do carro</h2>
+    <div class="box">
+      <div class="photoRow">
+        <button class="chip" id="photoAdd"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8.5 7 10 4h4l1.5 3"/></svg><span id="photoAddTxt"></span></button>
+        <button class="chip" id="photoDel" data-t="removePhoto" hidden>Remover</button>
+      </div>
+      <input type="file" id="photoFile" accept="image/*">
+      <p class="hint" id="photoHint" data-t="photoHint">Fica guardada só neste telemóvel.</p>
+    </div>
+
+    <h2 data-t="howCharge">Como carregas em casa</h2>
+    <div class="box">
+      <div class="chips" id="chips" role="group">
+        <button class="chip" data-kw="2.3" aria-pressed="false">2,3 kW<small data-t="plug">tomada normal</small></button>
+        <button class="chip" data-kw="3.7" aria-pressed="false">3,7 kW<small data-t="plug2">tomada reforçada</small></button>
+        <button class="chip" data-kw="7.4" aria-pressed="false">7,4 kW<small data-t="wallbox">wallbox</small></button>
+        <button class="chip" data-kw="11" aria-pressed="false">11 kW<small data-t="wallbox3">wallbox trifásica</small></button>
+      </div>
+      <label for="kw" data-t="kwOr">Ou indica a potência que o carro mostra (kW)</label>
+      <input id="kw" type="text" inputmode="decimal" placeholder="2,5">
+    </div>
+
+    <h2><span data-t="costH">Custo da eletricidade</span> <span class="opt" data-t="optional">(opcional)</span></h2>
+    <div class="box">
+      <div class="chips" id="tchips" role="group">
+        <button class="chip" data-tt="" aria-pressed="true"></button>
+        <button class="chip" data-tt="simple" aria-pressed="false"></button>
+        <button class="chip" data-tt="bi" aria-pressed="false"></button>
+      </div>
+      <div id="tSimple" hidden><label for="pSimple" data-t="pSimple">Preço por kWh (€)</label><input id="pSimple" type="text" inputmode="decimal" placeholder="0,1650"></div>
+      <div id="tBi" hidden>
+        <div class="grid">
+          <div><label for="pVazio" data-t="pVazio">Vazio (€/kWh)</label><input id="pVazio" type="text" inputmode="decimal" placeholder="0,1050"></div>
+          <div><label for="pFora" data-t="pFora">Fora de vazio (€/kWh)</label><input id="pFora" type="text" inputmode="decimal" placeholder="0,2050"></div>
+          <div><label for="vStart" data-t="vStart">Vazio começa às</label><input id="vStart" type="time" value="22:00"></div>
+          <div><label for="vEnd" data-t="vEnd">Vazio acaba às</label><input id="vEnd" type="time" value="08:00"></div>
+        </div>
+      </div>
+      <p class="warn" id="tMissing" hidden></p>
+      <p class="hint" id="tHint" data-t="tHint" hidden>Preço por kWh com IVA, como aparece na fatura.</p>
+    </div>
+
+    <div id="looksWrap">
+    <h2 data-t="looks">Aparência</h2>
+    <div class="box">
+      <label data-t="lang" style="margin-top:0">Idioma</label>
+      <div class="seg" id="segLang"><button data-v="pt" aria-pressed="false">Português</button><button data-v="en" aria-pressed="false">English</button></div>
+      <label data-t="theme">Tema</label>
+      <div class="seg" id="segTheme"><button data-v="light" aria-pressed="false" data-t="light">Claro</button><button data-v="dark" aria-pressed="false" data-t="dark">Escuro</button></div>
+    </div>
+    </div>
+
+    <button class="btn" id="saveCar" style="margin-top:20px" disabled data-t="save">Guardar</button>
+    <button class="btn2" id="cancelCar" hidden data-t="cancel">Cancelar</button>
+  </section>
+
+  <section id="chargeCard" hidden>
+    <div id="startBox">
+      <div class="startCard" style="margin-top:14px">
+        <div class="startHead"><div class="ic c-green"><svg class="i" viewBox="0 0 24 24"><path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5"/></svg></div>
+          <div><div class="a" data-t="startH">Pronto para carregar</div><div class="b" data-t="startSub">Indica a bateria que o carro mostra agora.</div></div></div>
+        <label for="p0" data-t="pNow">Bateria agora (%)</label>
+        <div class="bigIn"><input id="p0" type="text" inputmode="decimal" placeholder="35"><span>%</span></div>
+        <label for="km0" data-t="kmNow">Quilómetros do carro (opcional)</label>
+        <input id="km0" type="text" inputmode="numeric" placeholder="45230">
+        <p class="hint" data-t="kmHint"></p>
+        <button class="btn go" id="go"><svg viewBox="0 0 24 24"><path d="M13.5 2 4 14h7l-1.5 8L20 10h-7z"/></svg><span data-t="go">Iniciar carregamento</span></button>
+      </div>
+      <div class="stats" id="sumStats" hidden>
+        <div class="stat" id="sLastBox"><div class="ic c-green"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="7" width="16" height="10" rx="2.5"/><path d="M22 11v2M7 10v4M11 10v4"/></svg></div><div class="v" id="sLast"></div><div class="l" data-t="sLast">último carregamento</div></div>
+        <div class="stat" id="sAvgBox"><div class="ic c-violet"><svg class="i" viewBox="0 0 24 24"><path d="M5 20 9.5 4M19 20 14.5 4M12 6v2M12 11v2M12 16v2"/></svg></div><div class="v" id="sAvg"></div><div class="l">kWh/100 km</div></div>
+        <div class="stat" id="sMonthBox"><div class="ic c-amber"><svg class="i" viewBox="0 0 24 24"><path d="M17.5 6.5a7 7 0 1 0 0 11"/><path d="M4 10h9M4 14h9"/></svg></div><div class="v" id="sMonth"></div><div class="l" data-t="sMonth">este mês</div></div>
+      </div>
+    </div>
+    <div id="liveBox" hidden>
+      <div id="liveRes">
+        <div class="pct"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 2 4 14h7l-1.5 8L20 10h-7z"/></svg><span class="n" id="lPct">0</span><span class="u">%</span></div>
+        <div class="status" id="lEta"></div>
+        <div class="bar"><i id="lBar"></i><b></b></div>
+        <div class="scale"><span id="lFrom"></span><span>80 %</span><span>100 %</span></div>
+        <div class="stats">
+          <div class="stat"><div class="ic c-blue"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="v" id="lTime"></div><div class="l" data-t="sTime">a carregar</div></div>
+          <div class="stat"><div class="ic c-green"><svg class="i" viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></svg></div><div class="v" id="lKwh"></div><div class="l" data-t="sKwh">energia</div></div>
+          <div class="stat" id="lCostBox" hidden><div class="ic c-amber"><svg class="i" viewBox="0 0 24 24"><path d="M17.5 6.5a7 7 0 1 0 0 11"/><path d="M4 10h9M4 14h9"/></svg></div><div class="v" id="lCost"></div><div class="l" id="lCostL"></div></div>
+        </div>
+        <div class="row" id="lCons" hidden>
+          <div class="ic c-violet"><svg class="i" viewBox="0 0 24 24"><path d="M5 20 9.5 4M19 20 14.5 4M12 6v2M12 11v2M12 16v2"/></svg></div>
+          <div class="t"><div class="a" data-t="consLive">Consumo desde o último</div><div class="b" id="lConsKm"></div></div>
+          <div class="r"><span id="lConsV"></span><small>kWh/100 km</small></div>
+        </div>
+      </div>
+      <div id="confirmBox" class="box" hidden style="margin-top:8px">
+        <p class="hint" id="confirmTxt" style="margin:0 0 4px;color:var(--ink)"></p>
+        <label for="pr" data-t="prLabel">Bateria que o carro mostra (%)</label><input id="pr" type="text" inputmode="decimal">
+      </div>
+      <button class="btn go" id="stop">Parar carregamento</button>
+      <button class="btn2" id="cancel" data-t="cancelCharge">Cancelar sem guardar</button>
+    </div>
+  </section>
+
+  <section id="histCard" hidden>
+    <h2 data-t="hist">Histórico</h2>
+    <div id="list"></div>
+  </section>
+
+  <section id="advCard" hidden>
+    <h2 data-t="accH">Precisão</h2>
+    <div class="box">
+      <details>
+        <summary data-t="acc">Precisão da estimativa</summary>
+        <label for="eff" data-t="eff">Eficiência de carga (%)</label>
+        <input id="eff" type="text" inputmode="decimal">
+        <p class="hint" id="effHint"></p>
+        <button class="btn2" id="effReset" data-t="effReset">Repor valor por defeito</button>
+      </details>
+    </div>
+  </section>
+</main>
+<script>
+(function(){
+  /* [marca, modelo, bateria útil kWh, carga máx. AC kW]. Bateria útil: EV Database (ev-database.org), nov. 2026; modelos já fora de venda e carga AC: aproximados. */
+  var CARS=[
+    ['BMW','i3 120 Ah (até 2022)',37.9,11],['BMW','iX1 eDrive20 / xDrive30',65.2,11],['BMW','i4 eDrive35',67.1,11],['BMW','i4 eDrive40 / M60',81.3,11],
+    ['BYD','Dolphin Surf 43 kWh',43.2,11],['BYD','Dolphin 60 kWh',60.5,11],['BYD','Atto 2 51 kWh',51.1,11],['BYD','Atto 2 65 kWh',64.8,11],['BYD','Atto 3',60.5,11],['BYD','Seal 82,5 kWh',82.5,11],
+    ['Citroën','ë-C3 44 kWh',43.8,7.4],['Citroën','ë-C4 50 kWh',46.3,7.4],['Citroën','ë-C4 54 kWh',50.8,7.4],
+    ['Cupra','Born 58 kWh',58,11],['Cupra','Born 79 kWh',79,11],
+    ['Dacia','Spring (2021–2023)',25,6.6],['Dacia','Spring (2024+)',24,7],
+    ['Fiat','500e 42 kWh',37.3,11],['Fiat','600e',50.8,11],['Fiat','Grande Panda 44 kWh',43.8,7.4],
+    ['Hyundai','Ioniq Electric 38 kWh',38.3,7.2],['Hyundai','Kona Electric 39 kWh (2018–2023)',39.2,7.2],['Hyundai','Kona Electric 64 kWh (2018–2023)',64,7.2],
+    ['Hyundai','Kona Electric 48,6 kWh (2023+)',48.6,11],['Hyundai','Kona Electric 65 kWh (2023+)',64.8,11],['Hyundai','Inster 49 kWh',46,11],
+    ['Hyundai','Ioniq 5 58/63 kWh',60,11],['Hyundai','Ioniq 5 77 kWh (até 2024)',74,11],['Hyundai','Ioniq 5 84 kWh',80,11],['Hyundai','Ioniq 6 84 kWh',80,11],
+    ['Kia','e-Niro 64 kWh (2019–2022)',64,7.2],['Kia','Niro EV (2022+)',64.8,11],['Kia','EV3 Standard Range',55,11],['Kia','EV3 Long Range',78,11],
+    ['Kia','EV6 77 kWh (até 2024)',77.4,11],['Kia','EV6 84 kWh',80,11],
+    ['Mini','Cooper E',36.6,11],['Mini','Cooper SE',49.2,11],['Mini','Countryman E / SE',65.2,11],
+    ['MG','MG4 51 kWh',50.8,6.6],['MG','MG4 64 kWh',61.7,11],
+    ['Nissan','Leaf 40 kWh',39,6.6],['Nissan','Leaf e+ 62 kWh',59,6.6],['Nissan','Ariya 63 kWh',63,7.4],['Nissan','Ariya 87 kWh',87,7.4],
+    ['Opel','Corsa Electric 50 kWh',46.3,7.4],['Opel','Corsa Electric 54 kWh',50.8,7.4],['Opel','Mokka Electric 54 kWh',50.8,7.4],
+    ['Peugeot','e-208 50 kWh',46.3,7.4],['Peugeot','e-208 54 kWh',50.8,7.4],['Peugeot','e-2008 50 kWh',46.3,7.4],['Peugeot','e-2008 54 kWh',50.8,7.4],['Peugeot','e-308 58 kWh',55.4,7.4],
+    ['Polestar','2 Long Range',79,11],
+    ['Renault','Zoe ZE40',41,22],['Renault','Zoe ZE50',52,22],['Renault','Megane E-Tech 60 kWh',60,7.4],['Renault','5 E-Tech 40 kWh',40,11],['Renault','5 E-Tech 52 kWh',52,11],
+    ['Skoda','Enyaq 60',58,11],['Skoda','Enyaq 80 / 85',77,11],['Skoda','Elroq 60',58,11],['Skoda','Elroq 85',77,11],
+    ['Smart','#1 Pro+ / Premium',62,22],
+    ['Tesla','Model 3 RWD (até 2023)',57.5,11],['Tesla','Model 3 RWD (2024+)',60,11],['Tesla','Model 3 Long Range (até 2023)',75,11],['Tesla','Model 3 Long Range / Premium (2024+)',79,11],['Tesla','Model 3 Performance (2024+)',79,11],
+    ['Tesla','Model Y RWD (até 2024)',57.5,11],['Tesla','Model Y RWD (2025+)',60,11],['Tesla','Model Y Long Range (até 2024)',75,11],['Tesla','Model Y Long Range / Premium (2025+)',79,11],['Tesla','Model Y Performance',79,11],
+    ['Volkswagen','e-Golf 36 kWh',32,7.2],['Volkswagen','ID.3 58 kWh',58,11],['Volkswagen','ID.3 77/79 kWh',77,11],['Volkswagen','ID.4 Pro 77 kWh',77,11],['Volkswagen','ID.7 77 kWh',77,11],
+    ['Volvo','EX30 51 kWh',49,11],['Volvo','EX30 Long Range',65,11],['Volvo','EX40 / XC40 Recharge 82 kWh',79,11]
+  ];
+
+  /* ---------- Textos PT / EN ---------- */
+  var TXT={
+    pt:{app:'My EV Battery',settings:'Definições',back:'Voltar',yourCar:'O teu carro',makeModel:'Marca e modelo',chooseCar:'Escolhe o teu carro',otherCar:'Outro carro (indicar bateria)',
+      nameOpt:'Nome (opcional)',myCar:'O meu carro',usable:'Bateria útil (kWh)',acMax:'Carga máx. AC (kW, opcional)',
+      modelHint:'Bateria útil ≈ {kwh} kWh · aceita até {ac} kW em casa (AC). Se não bater certo com o teu carro, escolhe "Outro carro" e indica os valores.',
+      photoH:'Foto do carro',addPhoto:'Adicionar foto',changePhoto:'Trocar foto',removePhoto:'Remover',photoHint:'Fica guardada só neste telemóvel.',photoErr:'Não foi possível guardar a foto.',
+      howCharge:'Como carregas em casa',plug:'tomada normal',plug2:'tomada reforçada',wallbox:'wallbox',wallbox3:'wallbox trifásica',kwOr:'Ou indica a potência que o carro mostra (kW)',
+      costH:'Custo da eletricidade',optional:'(opcional)',tNone:'Não calcular',simple:'Simples',bi:'Bi-horário',pSimple:'Preço por kWh (€)',pVazio:'Vazio (€/kWh)',pFora:'Fora de vazio (€/kWh)',
+      vStart:'Vazio começa às',vEnd:'Vazio acaba às',tHint:'Preço por kWh com IVA, como aparece na fatura.',missSimple:'Falta o preço por kWh.',missVazio:'Falta o preço no vazio.',missFora:'Falta o preço fora de vazio.',
+      looks:'Aparência',lang:'Idioma',theme:'Tema',auto:'Automático',light:'Claro',dark:'Escuro',save:'Guardar',cancel:'Cancelar',
+      spec:'Bateria {kwh} kWh · {kw} kW em casa',specBi:' · bi-horário',capWarn:'Este carro aceita no máximo {ac} kW em casa, por isso a estimativa usa {ek} kW.',
+      startH:'Pronto para carregar',startSub:'Indica a bateria que o carro mostra agora.',sLast:'último carregamento',sMonth:'este mês',pNow:'Bateria agora (%)',kmNow:'Quilómetros do carro (opcional)',
+      kmHint:'Com os km a app calcula o consumo do carro entre carregamentos. Se carregares sem registar aqui (ex.: num posto), o consumo desse intervalo fica errado.',
+      go:'Iniciar carregamento',to80:'A carregar · 80 % às {t}',to100:'A carregar · 100 % daqui a {d}',full:'Bateria cheia (estimativa)',from:'Início {p} %',
+      sTime:'a carregar',sKwh:'energia',soFar:'até agora',total:'total',consLive:'Consumo desde o último',
+      stop:'Parar carregamento',confirmStop:'Confirmar e guardar',confirmTxt:'A app estima {p} %. Confirma no carro e corrige se for diferente.',prLabel:'Bateria que o carro mostra (%)',cancelCharge:'Cancelar sem guardar',
+      hist:'Histórico',empty:'Ainda sem carregamentos.',real:'% real',est:'estimado',avg:'Consumo médio: {v} kWh/100 km · {km} km',consBefore:'Consumo antes: ',del:'Apagar carregamento de {d}',
+      accH:'Precisão',acc:'Precisão da estimativa',eff:'Eficiência de carga (%)',effReset:'Repor valor por defeito',
+      effCal:'Ajustada aos teus carregamentos. Sempre que confirmas a bateria ao parar, a app afina este valor.',effDef:'Valor típico para {kw} kW. Confirma a bateria ao parar um carregamento e a app afina-o sozinha.',
+      months:['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']},
+    en:{app:'My EV Battery',settings:'Settings',back:'Back',yourCar:'Your car',makeModel:'Make and model',chooseCar:'Choose your car',otherCar:'Other car (enter battery)',
+      nameOpt:'Name (optional)',myCar:'My car',usable:'Usable battery (kWh)',acMax:'Max AC charging (kW, optional)',
+      modelHint:'Usable battery ≈ {kwh} kWh · accepts up to {ac} kW at home (AC). If this doesn\'t match your car, choose "Other car" and enter the values.',
+      photoH:'Car photo',addPhoto:'Add photo',changePhoto:'Change photo',removePhoto:'Remove',photoHint:'Stored only on this phone.',photoErr:'The photo could not be saved.',
+      howCharge:'How you charge at home',plug:'standard socket',plug2:'reinforced socket',wallbox:'wallbox',wallbox3:'3-phase wallbox',kwOr:'Or enter the power your car shows (kW)',
+      costH:'Electricity cost',optional:'(optional)',tNone:'Don\'t calculate',simple:'Flat rate',bi:'Off-peak / peak',pSimple:'Price per kWh (€)',pVazio:'Off-peak (€/kWh)',pFora:'Peak (€/kWh)',
+      vStart:'Off-peak starts',vEnd:'Off-peak ends',tHint:'Price per kWh including VAT, as on your bill.',missSimple:'Price per kWh is missing.',missVazio:'Off-peak price is missing.',missFora:'Peak price is missing.',
+      looks:'Appearance',lang:'Language',theme:'Theme',auto:'Automatic',light:'Light',dark:'Dark',save:'Save',cancel:'Cancel',
+      spec:'{kwh} kWh battery · {kw} kW at home',specBi:' · off-peak tariff',capWarn:'This car accepts at most {ac} kW at home, so the estimate uses {ek} kW.',
+      startH:'Ready to charge',startSub:'Enter the battery level your car shows now.',sLast:'last charge',sMonth:'this month',pNow:'Battery now (%)',kmNow:'Odometer (km, optional)',
+      kmHint:'With the km the app works out your car\'s consumption between charges. If you charge without logging it here (e.g. at a public charger), that interval\'s consumption will be wrong.',
+      go:'Start charging',to80:'Charging · 80% at {t}',to100:'Charging · 100% in {d}',full:'Battery full (estimate)',from:'Start {p}%',
+      sTime:'charging',sKwh:'energy',soFar:'so far',total:'total',consLive:'Since last charge',
+      stop:'Stop charging',confirmStop:'Confirm and save',confirmTxt:'The app estimates {p}%. Check your car and correct it if different.',prLabel:'Battery shown by the car (%)',cancelCharge:'Cancel without saving',
+      hist:'History',empty:'No charges yet.',real:'actual %',est:'estimated',avg:'Average consumption: {v} kWh/100 km · {km} km',consBefore:'Before: ',del:'Delete charge from {d}',
+      accH:'Accuracy',acc:'Estimate accuracy',eff:'Charging efficiency (%)',effReset:'Reset to default',
+      effCal:'Adjusted to your charges. Each time you confirm the battery when stopping, the app fine-tunes this value.',effDef:'Typical value for {kw} kW. Confirm the battery when you stop a charge and the app fine-tunes it.',
+      months:['January','February','March','April','May','June','July','August','September','October','November','December']}
+  };
+
+  var KEY='ev-bateria-v1',PKEY='ev-bateria-foto';
+  var S={car:null,kw:'',eff:'',effCal:false,active:null,sessions:[],tariff:null,lang:'',theme:''};
+  try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&typeof p==='object')S=Object.assign(S,p);}}catch(e){}
+  var photo=null;try{photo=localStorage.getItem(PKEY);}catch(e){}
+  function save(){S.updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}queueSync();}
+  /* Cópia na conta claude.ai (para quem tem sessão iniciada): o armazenamento do telemóvel nem sempre fica guardado. */
+  var DOC=null,PDOC=null,syncT=null,busy=false;
+  function queueSync(){if(!DOC)return;clearTimeout(syncT);syncT=setTimeout(pushState,800);}
+  function pushState(){if(!DOC)return;if(busy){queueSync();return;}busy=true;
+    DOC.set({json:JSON.stringify(S)}).then(function(){busy=false;},function(e){busy=false;if(e&&(e.code==='invalid_argument'||e.code==='revoked'||e.code==='not_granted'))DOC=null;});}
+  function syncPhoto(){if(!PDOC)return;(photo?PDOC.set({img:photo}):PDOC.delete()).catch(function(){});}
+  function startSync(){
+    if(!window.claude||!claude.use)return;
+    Promise.all([claude.use('db'),claude.use('user')]).then(function(r){
+      var db=r[0],u=r[1];if(!db||!u)return null;
+      return u.id().then(function(id){
+        if(!id)return;var c=db.collection('data/users/'+id),d=c.doc('state'),pd=c.doc('photo');
+        return d.get().then(function(snap){
+          var remote=null;if(snap.exists){try{remote=JSON.parse(snap.data().json||'null');}catch(e){}}
+          DOC=d;
+          if(remote&&(remote.updated||0)>(S.updated||0)){
+            var hadCar=!!S.car;S=Object.assign(S,remote);try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+            if(!hadCar&&S.car)$('setup').hidden=true;
+            applyTheme();applyLang();renderAll();
+          }else if(S.car)pushState();
+          return pd.get().then(function(ps){
+            PDOC=pd;var img=ps.exists&&ps.data().img;
+            if(img&&!photo){photo=img;try{localStorage.setItem(PKEY,img);}catch(e){}renderAll();}
+            else if(photo&&!img)syncPhoto();
+          });
+        });
+      });
+    }).catch(function(){});
+  }
+  var $=function(id){return document.getElementById(id);};
+  var num=function(v){var n=parseFloat(String(v==null?'':v).replace(',','.'));return isFinite(n)&&n>0?n:0;};
+  var LG='pt',LOC='pt-PT';
+  function t(k,v){var s=TXT[LG][k];if(s==null)s=TXT.pt[k];if(v)for(var x in v)s=s.split('{'+x+'}').join(v[x]);return s;}
+  var eurf=function(n){return n.toLocaleString(LOC,{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2});};
+  var nf=function(n,d){return n.toLocaleString(LOC,{maximumFractionDigits:d==null?1:d});};
+  function fmtDur(m){var h=Math.floor(m/60),r=Math.round(m%60);if(r===60){h++;r=0;}return (h?h+' h ':'')+(r||!h?r+' min':'');}
+  function hhmm(tm){return new Date(tm).toLocaleTimeString(LOC,{hour:'2-digit',minute:'2-digit',hour12:false});}
+  function dstr(d){return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();}
+
+  /*CALC-START*/
+  /* Minutos de [t0,t1) dentro da janela diária de vazio (hora local). A janela pode passar a meia-noite. */
+  function vazioMinutes(t0,t1,vStart,vEnd){
+    var hm=function(s){var q=String(s||'').split(':');return [+q[0]||0,+q[1]||0];};
+    var a=hm(vStart),b=hm(vEnd);
+    if(a[0]===b[0]&&a[1]===b[1]||!(t1>t0))return 0;
+    var cross=b[0]*60+b[1]<=a[0]*60+a[1];
+    var d=new Date(t0);d.setHours(0,0,0,0);d.setDate(d.getDate()-1);
+    var ms=0;
+    while(d.getTime()<t1){
+      var ws=new Date(d);ws.setHours(a[0],a[1],0,0);
+      var we=new Date(d);if(cross)we.setDate(we.getDate()+1);we.setHours(b[0],b[1],0,0);
+      var o=Math.min(t1,we.getTime())-Math.max(t0,ws.getTime());if(o>0)ms+=o;
+      d.setDate(d.getDate()+1);
+    }
+    return ms/60000;
+  }
+  /* Custo em € de um carregamento a potência constante kw entre t0 e t1. null se não houver tarifário completo. */
+  function costOf(t0,t1,kw,tariff){
+    if(!tariff)return null;
+    var h=Math.max(0,(t1-t0)/3600000);
+    if(tariff.type==='simple')return tariff.price>0?kw*h*tariff.price:null;
+    if(tariff.type==='bi'){
+      if(!(tariff.vazio>0&&tariff.fora>0))return null;
+      var hv=vazioMinutes(t0,t1,tariff.vStart,tariff.vEnd)/60;
+      return kw*(hv*tariff.vazio+(h-hv)*tariff.fora);
+    }
+    return null;
+  }
+  /*CALC-END*/
+
+  /* ---------- Idioma e tema ---------- */
+  var sel=$('model');
+  function buildSelect(){
+    var keep=sel.value,html='<option value="">'+t('chooseCar')+'</option>',brand='';
+    CARS.forEach(function(c,i){
+      if(c[0]!==brand){if(brand)html+='</optgroup>';brand=c[0];html+='<optgroup label="'+brand+'">';}
+      html+='<option value="'+i+'">'+c[0]+' '+c[1]+'</option>';
+    });
+    sel.innerHTML=html+'</optgroup><option value="custom">'+t('otherCar')+'</option>';sel.value=keep;
+  }
+  function applyLang(){
+    LG=S.lang||(/^pt/i.test(navigator.language||'')?'pt':'en');LOC=LG==='pt'?'pt-PT':'en-GB';
+    document.documentElement.lang=LOC;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-t]'),function(el){el.textContent=t(el.getAttribute('data-t'));});
+    var tc=document.querySelectorAll('#tchips .chip');tc[0].textContent=t('tNone');tc[1].textContent=t('simple');tc[2].textContent=t('bi');
+    $('edit').setAttribute('aria-label',t('settings'));$('cname').placeholder=t('myCar');
+    if(!S.active||$('confirmBox').hidden)$('stop').textContent=t('stop');
+    buildSelect();
+  }
+  var mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
+  function applyTheme(){var r=document.documentElement;if(S.theme)r.dataset.theme=S.theme;else delete r.dataset.theme;
+    r.classList.toggle('lt',S.theme==='light'||(!S.theme&&!(mq&&mq.matches)));}
+  if(mq)try{mq.addEventListener('change',applyTheme);}catch(e){}
+  function segSet(id,v){Array.prototype.forEach.call($(id).children,function(b){b.setAttribute('aria-pressed',String(b.dataset.v===v));});}
+  $('segLang').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;S.lang=b.dataset.v;save();segSet('segLang',S.lang);applyLang();renderSetup();});
+  $('segTheme').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;S.theme=b.dataset.v;save();segSet('segTheme',S.theme);applyTheme();});
+
+  /* ---------- Configuração ---------- */
+  var draft={kw:'',tt:''};
+  function getTariff(){return S.tariff||null;}
+  var cm=function(n){return n?String(n).replace('.',','):'';};
+  function draftTariff(){
+    if(draft.tt==='simple'){var p=num($('pSimple').value);return p?{type:'simple',price:p}:null;}
+    if(draft.tt==='bi'){var v=num($('pVazio').value),f=num($('pFora').value);if(!v||!f)return null;return {type:'bi',vazio:v,fora:f,vStart:$('vStart').value||'22:00',vEnd:$('vEnd').value||'08:00'};}
+    return null;
+  }
+  function defEff(kw){return kw<=3.7?85:kw<=7.4?88:90;}
+  function effKw(){var c=S.car;if(!c)return 0;var k=num(S.kw);return c.ac&&k>c.ac?c.ac:k;}
+  function eff(){return (num(S.eff)||defEff(effKw()))/100;}
+
+  function draftCar(){
+    var v=sel.value;
+    if(v==='custom'){var k=num($('ckwh').value);if(!k)return null;return {name:$('cname').value.trim()||t('myCar'),kwh:k,ac:num($('cac').value)||null,custom:true};}
+    if(v==='')return null;var c=CARS[+v];return {name:c[0]+' '+c[1],brand:c[0],model:c[1],kwh:c[2],ac:c[3]};
+  }
+  function renderSetup(){
+    $('customWrap').hidden=sel.value!=='custom';
+    var c=draftCar();
+    $('modelHint').textContent=(c&&!c.custom)?t('modelHint',{kwh:nf(c.kwh),ac:nf(c.ac)}):'';
+    var k=num(draft.kw);
+    Array.prototype.forEach.call(document.querySelectorAll('#tchips .chip'),function(b){b.setAttribute('aria-pressed',String(b.dataset.tt===draft.tt));});
+    $('tSimple').hidden=draft.tt!=='simple';$('tBi').hidden=draft.tt!=='bi';$('tHint').hidden=!draft.tt;
+    Array.prototype.forEach.call(document.querySelectorAll('#chips .chip'),function(b){b.setAttribute('aria-pressed',String(num(b.dataset.kw)===k));});
+    var miss='';
+    if(draft.tt==='simple'&&!num($('pSimple').value))miss=t('missSimple');
+    else if(draft.tt==='bi'){if(!num($('pVazio').value))miss=t('missVazio');else if(!num($('pFora').value))miss=t('missFora');}
+    $('tMissing').hidden=!miss;$('tMissing').textContent=miss;
+    $('saveCar').disabled=!(c&&k)||!!miss;
+    $('photoAddTxt').textContent=photo?t('changePhoto'):t('addPhoto');$('photoDel').hidden=!photo;
+  }
+  function openSetup(){
+    var c=S.car,ix=-1;
+    if(c&&!c.custom){CARS.forEach(function(x,i){if(x[0]+' '+x[1]===c.name)ix=i;});if(ix<0)c=S.car={name:c.name,kwh:c.kwh,ac:c.ac,custom:true};}
+    if(c){sel.value=c.custom?'custom':String(ix);if(c.custom){$('cname').value=c.name;$('ckwh').value=cm(c.kwh);$('cac').value=c.ac?cm(c.ac):'';}}
+    draft.kw=S.kw;$('kw').value=S.kw?cm(S.kw):'';
+    var T=S.tariff;draft.tt=T?T.type:'';
+    $('pSimple').value=T&&T.type==='simple'?cm(T.price):'';
+    $('pVazio').value=T&&T.type==='bi'?cm(T.vazio):'';$('pFora').value=T&&T.type==='bi'?cm(T.fora):'';
+    $('vStart').value=T&&T.type==='bi'?T.vStart:'22:00';$('vEnd').value=T&&T.type==='bi'?T.vEnd:'08:00';
+    segSet('segLang',LG);segSet('segTheme',document.documentElement.classList.contains('lt')?'light':'dark');
+    $('setup').hidden=false;$('cancelCar').hidden=!S.car;$('looksWrap').hidden=!S.car;$('topBar').hidden=!!S.car;
+    $('carCard').hidden=true;$('chargeCard').hidden=true;$('histCard').hidden=true;$('advCard').hidden=true;
+    if(S.car&&!(history.state&&history.state.setup))try{history.pushState({setup:1},'');}catch(e){}
+    try{window.scrollTo(0,0);}catch(e){}
+    renderSetup();
+  }
+  sel.addEventListener('change',renderSetup);
+  ['ckwh','cac','cname','pSimple','pVazio','pFora'].forEach(function(id){$(id).addEventListener('input',renderSetup);});
+  $('chips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;draft.kw=b.dataset.kw;$('kw').value='';renderSetup();});
+  $('tchips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;draft.tt=b.dataset.tt;renderSetup();});
+  $('kw').addEventListener('input',function(){draft.kw=String(num($('kw').value)||'');renderSetup();});
+  $('saveCar').addEventListener('click',function(){
+    var c=draftCar(),k=num(draft.kw);if(!c||!k)return;
+    var changed=!S.car||S.car.name!==c.name||num(S.kw)!==k;
+    S.car=c;S.kw=String(k);S.tariff=draftTariff();
+    if(changed&&!S.effCal)S.eff='';
+    save();closeSetup();
+  });
+  function closeSetup(){if(history.state&&history.state.setup){history.back();return;}$('setup').hidden=true;renderAll();}
+  $('cancelCar').addEventListener('click',closeSetup);
+  window.addEventListener('popstate',function(){if(!$('setup').hidden&&S.car){$('setup').hidden=true;renderAll();}});
+  $('edit').addEventListener('click',function(){if(!S.car){$('looksWrap').hidden=false;try{$('looksWrap').scrollIntoView({behavior:'smooth'});}catch(e){}return;}openSetup();});
+
+  /* ---------- Foto ---------- */
+  $('photoAdd').addEventListener('click',function(){$('photoFile').click();});
+  $('photoDel').addEventListener('click',function(){photo=null;try{localStorage.removeItem(PKEY);}catch(e){}syncPhoto();renderSetup();});
+  $('photoFile').addEventListener('change',function(){
+    var f=this.files&&this.files[0];this.value='';if(!f)return;
+    var url=URL.createObjectURL(f),img=new Image();
+    img.onload=function(){
+      var w=Math.min(700,img.naturalWidth),h=Math.round(img.naturalHeight*w/img.naturalWidth),cv=document.createElement('canvas');
+      cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
+      var d=cv.toDataURL('image/jpeg',0.72);
+      photo=d;syncPhoto();try{localStorage.setItem(PKEY,d);$('photoHint').textContent=t('photoHint');}catch(e){$('photoHint').textContent=t('photoErr');}
+      renderSetup();
+    };
+    img.onerror=function(){URL.revokeObjectURL(url);$('photoHint').textContent=t('photoErr');};
+    img.src=url;
+  });
+
+  /* ---------- Consumo ---------- */
+  function consBetween(q,p0,km){
+    if(!q||q.km==null||km==null||!S.car)return null;
+    var d=km-q.km,used=q.p1-p0;if(!(d>0&&used>0))return null;
+    var kwh=used/100*S.car.kwh,r={km:d,kwh:kwh,per100:kwh/d*100};
+    if(q.eur!=null&&q.kwh>0)r.eur100=r.per100/eff()*(q.eur/q.kwh);
+    return r;
+  }
+  function consTxt(c){return nf(c.per100)+' kWh/100 km'+(c.eur100!=null?' ('+eurf(c.eur100)+'/100 km)':'')+' · '+nf(c.km,0)+' km';}
+  function lastSession(before){var q=null;S.sessions.forEach(function(s){if(s.t<before&&(!q||s.t>q.t))q=s;});return q;}
+
+  /* ---------- Carregamento ---------- */
+  function live(a,now){
+    var cap=S.car.kwh,kw=effKw(),e=eff();
+    var h=Math.max(0,((now||Date.now())-a.t)/3600000);
+    var maxH=kw>0?(100-a.p)/100*cap/(kw*e):Infinity;
+    var full=h>=maxH;if(full)h=maxH;
+    var wall=kw*h;
+    var eur=costOf(a.t,a.t+h*3600000,kw,getTariff());
+    return {h:h,wall:wall,eur:eur,pct:Math.min(100,a.p+wall*e/cap*100),full:full,kw:kw,cap:cap,e:e};
+  }
+  function renderLive(){
+    if(!S.car)return;
+    var a=S.active;
+    $('startBox').hidden=!!a;$('liveBox').hidden=!a;
+    if(!a){renderSummary();return;}
+    var L=live(a);
+    $('lPct').textContent=Math.floor(L.pct);
+    $('lBar').style.width=L.pct+'%';
+    $('liveRes').classList.toggle('done',L.full);
+    $('lFrom').textContent=t('from',{p:Math.round(a.p)});
+    $('lTime').textContent=fmtDur(L.h*60);
+    $('lKwh').textContent='+'+nf(L.wall)+' kWh';
+    var s;
+    if(L.full)s=t('full');
+    else if(L.pct>=80)s=t('to100',{d:fmtDur((100-L.pct)/100*L.cap/(L.kw*L.e)*60)});
+    else{var rem=(80-L.pct)/100*L.cap/(L.kw*L.e);s=t('to80',{t:hhmm(Date.now()+rem*3600000)});}
+    $('lEta').textContent=s;
+    $('lCostBox').hidden=L.eur==null;
+    if(L.eur!=null){$('lCost').textContent=eurf(L.eur);$('lCostL').textContent=L.full?t('total'):t('soFar');}
+    var C=consBetween(lastSession(a.t),a.p,a.km);$('lCons').hidden=!C;
+    if(C){$('lConsV').textContent=nf(C.per100);$('lConsKm').textContent=nf(C.km,0)+' km'+(C.eur100!=null?' · '+eurf(C.eur100)+'/100 km':'');}
+  }
+  $('go').addEventListener('click',function(){
+    var p=parseFloat(String($('p0').value).replace(',','.'));
+    if(!(p>=0&&p<100)){$('p0').focus();return;}
+    var km=parseFloat(String($('km0').value).replace(/\s|\./g,'').replace(',','.'));
+    S.active={t:Date.now(),p:p};if(km>0)S.active.km=km;$('p0').value='';$('km0').value='';save();renderLive();
+  });
+  $('stop').addEventListener('click',function(){
+    var a=S.active;if(!a)return;
+    var endT=Date.now(),L=live(a,endT),end=L.pct;
+    if($('confirmBox').hidden){
+      $('pr').value=String(Math.round(L.pct));
+      $('confirmTxt').textContent=t('confirmTxt',{p:Math.round(L.pct)});
+      $('confirmBox').hidden=false;$('stop').textContent=t('confirmStop');$('pr').focus();return;
+    }
+    var real=parseFloat(String($('pr').value).replace(',','.'));
+    if(real>a.p&&real<=100){
+      end=real;
+      if(L.wall>0.3&&!L.full){var e=(real-a.p)/100*L.cap/L.wall*100;if(e>=50&&e<=100){S.eff=String(Math.round(e*10)/10);S.effCal=true;}}
+    }
+    if(L.h>0){var ses={id:Date.now(),t:a.t,mins:L.h*60,kwh:L.wall,p0:a.p,p1:end,real:real>a.p&&real<=100};if(a.km!=null)ses.km=a.km;if(L.eur!=null)ses.eur=Math.round(L.eur*100)/100;S.sessions.push(ses);}
+    S.active=null;save();resetStop();renderAll();
+  });
+  function resetStop(){$('pr').value='';$('confirmBox').hidden=true;$('stop').textContent=t('stop');}
+  $('cancel').addEventListener('click',function(){S.active=null;save();resetStop();renderLive();});
+  setInterval(renderLive,15000);
+  document.addEventListener('visibilitychange',renderLive);
+  window.addEventListener('pageshow',renderLive);
+
+  function renderSummary(){
+    var ss=S.sessions.slice().sort(function(x,y){return x.t-y.t;});
+    if(!ss.length){$('sumStats').hidden=true;return;}
+    var last=ss[ss.length-1];$('sLast').textContent=Math.round(last.p1)+' %';
+    var tk=0,tw=0;ss.forEach(function(s,i){var c=consBetween(ss[i-1],s.p0,s.km);if(c){tk+=c.km;tw+=c.kwh;}});
+    $('sAvgBox').hidden=!tk;if(tk)$('sAvg').textContent=nf(tw/tk*100);
+    var now=new Date(),m=0,hasM=false;ss.forEach(function(s){var d=new Date(s.t);if(s.eur!=null&&d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()){m+=s.eur;hasM=true;}});
+    $('sMonthBox').hidden=!hasM;if(hasM)$('sMonth').textContent=eurf(m);
+    $('sumStats').hidden=false;
+  }
+
+  /* ---------- Histórico ---------- */
+  var BATT='<svg class="i" viewBox="0 0 24 24"><rect x="3" y="7" width="16" height="10" rx="2.5"/><path d="M22 11v2M7 10v4M11 10v4"/></svg>';
+  var ROAD='<svg class="i" viewBox="0 0 24 24"><path d="M5 20 9.5 4M19 20 14.5 4M12 6v2M12 11v2M12 16v2"/></svg>';
+  function renderList(){
+    var ss=S.sessions.slice().sort(function(a,b){return b.t-a.t;});
+    var ul=$('list');
+    if(!ss.length){ul.innerHTML='<p class="hint" style="margin:0 2px">'+t('empty')+'</p>';return;}
+    var mk=function(tm){var d=new Date(tm);return d.getFullYear()*12+d.getMonth();};
+    var tot={};ss.forEach(function(s){if(s.eur!=null){var k=mk(s.t);tot[k]=(tot[k]||0)+s.eur;}});
+    var asc=ss.slice().reverse(),cons={},tk=0,tw=0;
+    asc.forEach(function(s,i){var c=consBetween(asc[i-1],s.p0,s.km);if(c){cons[s.id]=c;tk+=c.km;tw+=c.kwh;}});
+    var out=tk?'<div class="row" id="avgRow"><div class="ic c-violet">'+ROAD+'</div><div class="t"><div class="a">'+t('avg',{v:nf(tw/tk*100),km:nf(tk,0)})+'</div></div></div>':'',cur=null;
+    ss.slice(0,30).forEach(function(s){
+      var k=mk(s.t);
+      if(k!==cur){cur=k;out+='<div class="month">'+t('months')[k%12]+' '+Math.floor(k/12)+(tot[k]!=null?' · '+eurf(tot[k]):'')+'</div>';}
+      out+='<div class="row"><div class="ic c-green">'+BATT+'</div><div class="t"><div class="a">'+dstr(new Date(s.t))+'</div><div class="b">'+fmtDur(s.mins)+' · +'+nf(s.kwh)+' kWh · '+(s.real?t('real'):t('est'))+'</div>'+(cons[s.id]?'<div class="b">'+t('consBefore')+consTxt(cons[s.id])+'</div>':'')+'</div><div class="r">'+Math.round(s.p0)+' → '+Math.round(s.p1)+' %'+(s.eur!=null?'<small class="eur">'+eurf(s.eur)+'</small>':'')+'</div><button class="del" data-id="'+s.id+'" aria-label="'+t('del',{d:dstr(new Date(s.t))})+'">×</button></div>';
+    });
+    ul.innerHTML=out;
+  }
+  $('list').addEventListener('click',function(e){
+    var b=e.target.closest('button.del');if(!b)return;var id=Number(b.getAttribute('data-id'));
+    S.sessions=S.sessions.filter(function(s){return s.id!==id;});save();renderList();
+  });
+
+  /* ---------- Precisão ---------- */
+  $('eff').addEventListener('input',function(){var v=num($('eff').value);if(v>=50&&v<=100){S.eff=String(v);S.effCal=true;save();renderLive();renderAdv(true);}});
+  $('effReset').addEventListener('click',function(){S.eff='';S.effCal=false;save();renderAdv();renderLive();});
+  function renderAdv(keep){
+    if(!keep)$('eff').value=cm(Math.round(eff()*1000)/10);
+    $('effHint').textContent=S.effCal?t('effCal'):t('effDef',{kw:nf(effKw())});
+  }
+
+  /* ---------- Geral ---------- */
+  function renderAll(){
+    if(!S.car){openSetup();return;}
+    var c=S.car,k=num(S.kw),ek=effKw(),T=S.tariff;
+    $('topBar').hidden=false;
+    $('carPhoto').hidden=!photo;$('carIcon').hidden=!!photo;if(photo)$('carPhoto').src=photo;
+    var br=c.brand||'',mo=c.model||c.name;
+    if(!c.custom&&!c.brand){var sp=c.name.indexOf(' ');br=c.name.slice(0,sp);mo=c.name.slice(sp+1);}
+    $('carBrand').textContent=br;$('carBrand').hidden=!br;
+    $('carName').textContent=mo;
+    $('carInfo').textContent=t('spec',{kwh:nf(c.kwh),kw:nf(k)})+(T?(T.type==='simple'?' · '+nf(T.price,4)+' €/kWh':t('specBi')):'');
+    $('capWarn').hidden=!(ek<k);
+    if(ek<k)$('capWarn').textContent=t('capWarn',{ac:nf(c.ac),ek:nf(ek)});
+    $('carCard').hidden=false;$('chargeCard').hidden=false;$('histCard').hidden=false;$('advCard').hidden=false;
+    resetStop();renderLive();renderList();renderAdv();
+  }
+  applyTheme();applyLang();renderAll();startSync();
+})();
+</script>
+</body>
+</html>
