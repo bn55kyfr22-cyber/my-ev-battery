@@ -35,6 +35,15 @@ html.lt .month-card{box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(37,9
 .mc-v{font-size:2.4rem;font-weight:600;letter-spacing:-.02em;margin-top:8px;line-height:1.1}
 .mc-s{font-size:.85rem;color:var(--mute);margin-top:2px}
 .mc-f{display:flex;justify-content:space-between;gap:8px;font-size:.82rem;color:var(--mute);border-top:1px solid var(--card2);margin-top:12px;padding-top:10px}
+.ccHead{text-align:center;margin:-2px 0 6px}
+.ccimg{display:block;width:78%;max-width:300px;height:130px;object-fit:contain;margin:0 auto 2px}
+.ccName{font-size:.82rem;font-weight:600;color:var(--mute);display:none}
+#liveRes .pct .n{font-size:5.2rem}
+#liveRes{padding:10px 14px 6px!important;background:var(--card);box-shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(37,99,235,.08)}
+/* Ecrã principal sem cartão do carro: nome dentro do bloco de carregamento */
+html:not(.lt) #liveRes .stat,html:not(.lt) #liveRes .row{background:var(--card2)}
+html #carCard{display:none!important}
+html .ccName{display:block}
 .carrow{display:flex;align-items:center;gap:10px}.cartxt{flex:1;min-width:0}
 .carimg{width:46%;max-width:200px;height:96px;object-fit:contain;object-position:right center;flex:none}
 .cmpBest{margin-top:10px;background:rgba(34,197,94,.12);color:var(--ink);border-radius:14px;padding:10px 12px;font-size:.92rem}
@@ -238,6 +247,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   <section id="chargeCard" hidden>
     <div id="startBox">
       <div class="startCard" id="startCard" style="margin-top:14px">
+        <div class="ccHead"><img class="ccimg" alt="" hidden><div class="ccName"></div></div>
         <label class="switch"><input type="checkbox" id="awayT"><span class="sw"></span><span data-t="awayT">Carregar fora de casa</span></label>
         <div class="startHead"><div class="ic c-green" id="startIc"><svg class="i" viewBox="0 0 24 24"><path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5"/></svg></div>
           <div><div class="a" id="startH"></div><div class="b" id="startSub"></div></div></div>
@@ -258,6 +268,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     </div>
     <div id="liveBox" hidden>
       <div id="liveRes">
+        <div class="ccHead"><img class="ccimg" alt="" hidden><div class="ccName"></div></div>
         <div class="awayPill" id="lAway" hidden></div>
         <div class="pct"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 2 4 14h7l-1.5 8L20 10h-7z"/></svg><span class="n" id="lPct">0</span><span class="u">%</span></div>
         <div class="status" id="lEta"></div>
@@ -725,10 +736,12 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     var br=c.brand||'',mo=c.model||c.name;
     if(!c.custom&&!c.brand){var sp=c.name.indexOf(' ');br=c.name.slice(0,sp);mo=c.name.slice(sp+1);}
     var showImg=!!photo&&c.name==='Hyundai Kona Electric 64 kWh (2018–2023)';
-    $('carImg').hidden=!showImg;if(showImg)$('carImg').src=photo;
+    $('carImg').hidden=true;
+    Array.prototype.forEach.call(document.querySelectorAll('.ccimg'),function(im){im.hidden=!showImg;if(showImg)im.src=photo;});
     $('carBrand').textContent=br;$('carBrand').hidden=!br;
     if(mo==='Kona Electric 64 kWh (2018–2023)')mo='Kona Electric 64 kWh';
     $('carName').textContent=mo;
+    Array.prototype.forEach.call(document.querySelectorAll('.ccName'),function(el){el.textContent=(br?br+' ':'')+mo;});
     $('carInfo').textContent=t('spec',{kwh:nf(c.kwh),kw:nf(k)})+(T?(T.type==='simple'?' · '+nf(T.price,4)+' €/kWh':t('specBi')):'');
     var P=function(ic,cl,tx){return '<span class="pill"><span class="ic '+cl+'" style="width:auto;height:auto;margin:0;background:none">'+ic+'</span>'+tx+'</span>';};
     var I1='<svg class="i" viewBox="0 0 24 24"><rect x="3" y="7" width="16" height="10" rx="2.5"/><path d="M22 11v2M7 10v4M11 10v4"/></svg>',I2='<svg class="i" viewBox="0 0 24 24"><path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5"/></svg>',I3='<svg class="i" viewBox="0 0 24 24"><path d="M17.5 6.5a7 7 0 1 0 0 11"/><path d="M4 10h9M4 14h9"/></svg>';
@@ -740,7 +753,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   }
   applyTheme();applyLang();renderAll();startSync();
   /* Atualização automática: se o site tiver uma versão nova, recarrega (uma vez por abertura). */
-  var APP_VER='2026-11-17b';
+  var APP_VER='2026-11-18a';
   function checkUpdate(){
     if(!/^https?:/.test(location.protocol)||!window.fetch||S.active&&!$('confirmBox').hidden)return;
     fetch(location.pathname,{cache:'reload'}).then(function(r){return r.ok?r.text():'';}).then(function(txt){
