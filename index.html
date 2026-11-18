@@ -36,7 +36,12 @@ html.lt .month-card{box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(37,9
 .mc-s{font-size:.85rem;color:var(--mute);margin-top:2px}
 .mc-f{display:flex;justify-content:space-between;gap:8px;font-size:.82rem;color:var(--mute);border-top:1px solid var(--card2);margin-top:12px;padding-top:10px}
 .ccHead{text-align:center;margin:-2px 0 6px}
-.ccimg{display:block;width:78%;max-width:300px;height:130px;object-fit:contain;margin:0 auto 2px}
+.ccimg{display:block;width:78%;max-width:300px;height:105px;object-fit:contain;margin:0 auto 2px}
+.carfill{position:relative;display:inline-block;margin:0 auto 2px}
+.carfill .base{width:auto;max-width:300px;height:105px;filter:grayscale(1) opacity(.35);margin:0}
+.carfill .col{position:absolute;inset:0;width:100%;height:100%;margin:0;transition:clip-path .6s ease}
+.carfill i{position:absolute;top:6%;bottom:6%;width:2px;background:#22C55E;box-shadow:0 0 10px #22C55E;transition:left .6s ease}
+#liveRes.withcar .bar,#liveRes.withcar .scale{display:none}
 .ccName{font-size:.82rem;font-weight:600;color:var(--mute);display:none}
 #liveRes .pct .n{font-size:5.2rem}
 #liveRes{padding:10px 14px 6px!important;background:var(--card);box-shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(37,99,235,.08)}
@@ -268,7 +273,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     </div>
     <div id="liveBox" hidden>
       <div id="liveRes">
-        <div class="ccHead"><img class="ccimg" alt="" hidden><div class="ccName"></div></div>
+        <div class="ccHead"><div class="carfill" id="carFill" hidden><img class="ccimg base" alt=""><img class="ccimg col" id="carCol" alt=""><i id="carLine"></i></div><div class="ccName"></div></div>
         <div class="awayPill" id="lAway" hidden></div>
         <div class="pct"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 2 4 14h7l-1.5 8L20 10h-7z"/></svg><span class="n" id="lPct">0</span><span class="u">%</span></div>
         <div class="status" id="lEta"></div>
@@ -591,6 +596,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     var L=live(a);
     $('lPct').textContent=Math.floor(L.pct);
     $('lBar').style.width=L.pct+'%';
+    $('carCol').style.clipPath='inset(0 '+(100-L.pct)+'% 0 0)';$('carLine').style.left='calc('+L.pct+'% - 1px)';$('carLine').hidden=L.pct>=99.5;
     $('liveRes').classList.toggle('done',L.full);
     $('lFrom').textContent=t('from',{p:Math.round(a.p)});
     $('lAway').hidden=!a.away;$('liveRes').classList.toggle('away',!!a.away);$('stop').classList.toggle('blue',!!a.away);if(a.away)$('lAway').textContent='📍 '+t('awayLive',{kw:nf(L.kw)});
@@ -737,7 +743,8 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     if(!c.custom&&!c.brand){var sp=c.name.indexOf(' ');br=c.name.slice(0,sp);mo=c.name.slice(sp+1);}
     var showImg=!!photo&&c.name==='Hyundai Kona Electric 64 kWh (2018–2023)';
     $('carImg').hidden=true;
-    Array.prototype.forEach.call(document.querySelectorAll('.ccimg'),function(im){im.hidden=!showImg;if(showImg)im.src=photo;});
+    Array.prototype.forEach.call(document.querySelectorAll('.ccimg'),function(im){if(!im.closest('.carfill'))im.hidden=!showImg;if(showImg)im.src=photo;});
+    $('carFill').hidden=!showImg;$('liveRes').classList.toggle('withcar',showImg);
     $('carBrand').textContent=br;$('carBrand').hidden=!br;
     if(mo==='Kona Electric 64 kWh (2018–2023)')mo='Kona Electric 64 kWh';
     $('carName').textContent=mo;
@@ -753,7 +760,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   }
   applyTheme();applyLang();renderAll();startSync();
   /* Atualização automática: se o site tiver uma versão nova, recarrega (uma vez por abertura). */
-  var APP_VER='2026-11-18a';
+  var APP_VER='2026-11-18b';
   function checkUpdate(){
     if(!/^https?:/.test(location.protocol)||!window.fetch||S.active&&!$('confirmBox').hidden)return;
     fetch(location.pathname,{cache:'reload'}).then(function(r){return r.ok?r.text():'';}).then(function(txt){
