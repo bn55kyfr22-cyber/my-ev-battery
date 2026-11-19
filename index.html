@@ -633,7 +633,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     $('liveRes').classList.toggle('done',L.full);
     $('lFrom').textContent=t('from',{p:Math.round(a.p)});
     $('lAway').hidden=!a.away;$('liveRes').classList.toggle('away',!!a.away);$('stop').classList.toggle('blue',!!a.away);if(a.away)$('lAway').textContent='📍 '+t('awayLive',{kw:nf(L.kw)});
-    $('lTime').textContent=fmtDur(L.h*60);
+    var dm=Math.round(L.h*60);$('lTime').textContent=dm>=60?Math.floor(dm/60)+' h '+String(dm%60).padStart(2,'0'):fmtDur(dm);
     $('lKwh').textContent='+'+nf(L.wall)+' kWh';
     var at=function(p){return Date.now()+(p-L.pct)/100*L.cap/(L.kw*L.e)*3600000;};
     var when=function(ts){var d=new Date(ts),n=new Date(),a=new Date(n.getFullYear(),n.getMonth(),n.getDate()),b=new Date(d.getFullYear(),d.getMonth(),d.getDate()),k=Math.round((b-a)/86400000);
@@ -852,7 +852,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   }
   applyTheme();applyLang();renderAll();startSync();
   /* Atualização automática: se o site tiver uma versão nova, recarrega (uma vez por abertura). */
-  var APP_VER='2026-11-19c';
+  var APP_VER='2026-11-19d';
   function checkUpdate(){
     if(!/^https?:/.test(location.protocol)||!window.fetch||S.active&&!$('confirmBox').hidden)return;
     fetch(location.pathname,{cache:'reload'}).then(function(r){return r.ok?r.text():'';}).then(function(txt){
