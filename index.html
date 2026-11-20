@@ -340,6 +340,8 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     ['Citroën','ë-C3 44 kWh',43.8,7.4],['Citroën','ë-C4 50 kWh',46.3,7.4],['Citroën','ë-C4 54 kWh',50.8,7.4],
     ['Cupra','Born 58 kWh',58,11],['Cupra','Born 79 kWh',79,11],
     ['Dacia','Spring (2021–2023)',25,6.6],['Dacia','Spring (2024+)',24,7],
+    ['DS','3 Crossback E-Tense 50 kWh (2019–2022)',46.3,7.4],
+    ['DS','3 E-Tense 54 kWh (2023–)',50.8,7.4],
     ['Fiat','500e 42 kWh',37.3,11],['Fiat','600e',50.8,11],['Fiat','Grande Panda 44 kWh',43.8,7.4],
     ['Hyundai','Ioniq Electric 38 kWh',38.3,7.2],['Hyundai','Kona Electric 39 kWh (2018–2023)',39.2,7.2],['Hyundai','Kona Electric 64 kWh (2018–2023)',64,7.2],
     ['Hyundai','Kona Electric 48,6 kWh (2023+)',48.6,11],['Hyundai','Kona Electric 65 kWh (2023+)',64.8,11],['Hyundai','Inster 49 kWh',46,11],
@@ -354,6 +356,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
     ['Polestar','2 Long Range',79,11],
     ['Renault','Zoe ZE40',41,22],['Renault','Zoe ZE50',52,22],['Renault','Megane E-Tech 60 kWh',60,7.4],['Renault','5 E-Tech 40 kWh',40,11],['Renault','5 E-Tech 52 kWh',52,11],
     ['Skoda','Enyaq 60',58,11],['Skoda','Enyaq 80 / 85',77,11],['Skoda','Elroq 60',58,11],['Skoda','Elroq 85',77,11],
+    ['Smart','fortwo / forfour EQ e electric drive (2017–2024)',16.7,4.6],
     ['Smart','#1 Pro+ / Premium',62,22],
     ['Tesla','Model 3 RWD (até 2023)',57.5,11],['Tesla','Model 3 RWD (2024+)',60,11],['Tesla','Model 3 Long Range (até 2023)',75,11],['Tesla','Model 3 Long Range / Premium (2024+)',79,11],['Tesla','Model 3 Performance (2024+)',79,11],
     ['Tesla','Model Y RWD (até 2024)',57.5,11],['Tesla','Model Y RWD (2025+)',60,11],['Tesla','Model Y Long Range (até 2024)',75,11],['Tesla','Model Y Long Range / Premium (2025+)',79,11],['Tesla','Model Y Performance',79,11],
@@ -860,7 +863,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   }
   applyTheme();applyLang();renderAll();startSync();
   /* Atualização automática: se o site tiver uma versão nova, recarrega (uma vez por abertura). */
-  var APP_VER='2026-11-20a';
+  var APP_VER='2026-11-20b';
   function checkUpdate(){
     if(!/^https?:/.test(location.protocol)||!window.fetch||S.active&&!$('confirmBox').hidden)return;
     fetch(location.pathname,{cache:'reload'}).then(function(r){return r.ok?r.text():'';}).then(function(txt){
