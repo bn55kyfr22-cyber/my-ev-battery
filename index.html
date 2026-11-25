@@ -817,6 +817,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   var PLUG='<svg class="i" viewBox="0 0 24 24"><path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5"/></svg>';
   var PIN='<svg class="i" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
   function renderStart(){
+    var lk=null,lt=0;S.sessions.forEach(function(x){if(x.km!=null&&x.t>lt){lt=x.t;lk=x.km;}});if(S.active&&S.active.km)lk=S.active.km;$('km0').placeholder=lk!=null?nf(lk,0):'45230';
     var aw=$('awayT').checked;
     $('startCard').classList.toggle('away',aw);$('akWrap').hidden=!aw;
     var ak=num(awayKw);Array.prototype.forEach.call(document.querySelectorAll('#akChips .chip'),function(b){b.setAttribute('aria-pressed',String(num(b.dataset.kw)===ak));});
@@ -996,7 +997,7 @@ details summary{cursor:pointer;font-weight:500;min-height:32px}
   }
   applyTheme();applyLang();renderAll();startSync();
   /* Atualização automática: se o site tiver uma versão nova, recarrega (uma vez por abertura). */
-  var APP_VER='2026-11-25b';
+  var APP_VER='2026-11-25c';
   function checkUpdate(){
     if(!/^https?:/.test(location.protocol)||!window.fetch||S.active&&!$('confirmBox').hidden)return;
     fetch(location.pathname,{cache:'reload'}).then(function(r){return r.ok?r.text():'';}).then(function(txt){
